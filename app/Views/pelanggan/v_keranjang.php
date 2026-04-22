@@ -5,162 +5,205 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Keranjang Pesanan - Kafe Gamified</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style> body { font-family: 'Inter', sans-serif; } </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style> body { font-family: 'Inter', sans-serif; background-color: #f9fafb; } </style>
 </head>
-<body class="bg-gray-50 pb-32">
+<body class="pb-24">
 
-    <div class="bg-white p-4 flex items-center shadow-sm sticky top-0 z-40">
-        <a href="<?= base_url('/') ?>" class="text-orange-600 font-bold mr-4 text-xl">←</a>
-        <h1 class="text-xl font-bold tracking-tight text-gray-800">Keranjang Saya</h1>
+    <div class="bg-white p-4 flex items-center shadow-sm sticky top-0 z-40 border-b border-gray-100">
+        <a href="<?= base_url('/') ?>" class="text-gray-800 font-bold mr-4 text-xl bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors">←</a>
+        <div>
+            <h1 class="text-xl font-black tracking-tight text-gray-800">Keranjang Saya</h1>
+            <p class="text-xs text-gray-500 font-medium">Review pesanan sebelum bayar</p>
+        </div>
     </div>
 
-    <div class="p-4 max-w-md mx-auto">
-        <div class="bg-orange-50 border border-orange-100 rounded-xl p-4 mb-4 flex justify-between items-center">
-            <span class="font-semibold text-gray-700">Nomor Meja:</span>
-            <span class="text-xl font-black text-orange-600"><?= esc(session()->get('no_meja') ?? '-') ?></span>
-        </div>
+    <div class="max-w-md mx-auto p-4 mt-2">
+        
+        <div id="cart-items-container" class="space-y-4 mb-6">
+            </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-4">
-            <h2 class="font-bold text-gray-800 mb-3 border-b pb-2">Rincian Pesanan</h2>
-            <div id="cart-items-container" class="space-y-4">
+        <div id="checkout-form-container" class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hidden">
+            <h3 class="font-bold text-gray-800 mb-4 border-b pb-2">Informasi Pesanan</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Nomor Meja</label>
+                    <input type="number" id="no_meja" placeholder="Contoh: 12" required class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none text-lg font-bold text-gray-800">
                 </div>
-        </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-4">
-            <h2 class="font-bold text-gray-800 mb-3">Metode Pembayaran</h2>
-            <div class="space-y-2">
-                <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-                    <input type="radio" name="metode_bayar" value="tunai" class="w-5 h-5 text-orange-600" checked>
-                    <span class="ml-3 font-medium text-gray-700">Tunai (Bayar di Kasir)</span>
-                </label>
-                <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-                    <input type="radio" name="metode_bayar" value="qris" class="w-5 h-5 text-orange-600">
-                    <span class="ml-3 font-medium text-gray-700">QRIS (E-Wallet/M-Banking)</span>
-                </label>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Metode Pembayaran</label>
+                    <select id="metode_bayar" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-orange-500 outline-none font-semibold text-gray-800">
+                        <option value="Cash">Bayar Tunai di Kasir (Cash)</option>
+                        <option value="QRIS">QRIS / E-Wallet</option>
+                    </select>
+                </div>
             </div>
         </div>
+
     </div>
 
-    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)] z-50">
+    <div id="checkout-bar" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)] hidden z-50">
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div>
-                <p class="text-sm font-medium text-gray-500">Total Pembayaran</p>
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Tagihan</p>
                 <p class="text-2xl font-black text-orange-600" id="grand-total">Rp 0</p>
             </div>
-            <button onclick="prosesCheckout()" id="btn-checkout" class="bg-orange-600 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-orange-200 hover:bg-orange-700 active:scale-95 transition-all disabled:opacity-50">
+            <button onclick="prosesCheckout()" id="btn-checkout" class="bg-orange-600 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-orange-200 hover:bg-orange-700 active:scale-95 transition-all flex items-center gap-2">
                 Pesan Sekarang
             </button>
         </div>
     </div>
 
     <script>
-        // Ambil data keranjang dari Local Storage
+        // Ambil memori keranjang dari browser
         let cart = JSON.parse(localStorage.getItem('cafe_cart')) || [];
         let grandTotal = 0;
 
-        // Format angka ke Rupiah
-        const formatRp = (angka) => 'Rp ' + angka.toLocaleString('id-ID');
-
-        // Fungsi merender isi keranjang ke HTML
-        function renderCart() {
+        function loadCart() {
             const container = document.getElementById('cart-items-container');
-            const totalEl = document.getElementById('grand-total');
-            const btnCheckout = document.getElementById('btn-checkout');
-            
+            const formContainer = document.getElementById('checkout-form-container');
+            const checkoutBar = document.getElementById('checkout-bar');
+            const grandTotalEl = document.getElementById('grand-total');
+
             container.innerHTML = '';
             grandTotal = 0;
 
+            // Jika keranjang kosong
             if (cart.length === 0) {
-                container.innerHTML = '<p class="text-center text-gray-400 py-4">Keranjang masih kosong.</p>';
-                totalEl.innerText = formatRp(0);
-                btnCheckout.disabled = true;
+                container.innerHTML = `
+                    <div class="text-center py-12 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                        <div class="text-6xl mb-4">🛒</div>
+                        <h2 class="text-xl font-bold text-gray-800 mb-2">Keranjang Masih Kosong</h2>
+                        <p class="text-gray-500 text-sm mb-6">Yuk, pilih menu favoritmu dulu!</p>
+                        <a href="<?= base_url('/') ?>" class="bg-orange-100 text-orange-700 font-bold px-6 py-2 rounded-full hover:bg-orange-200">Lihat Menu</a>
+                    </div>
+                `;
+                formContainer.classList.add('hidden');
+                checkoutBar.classList.add('hidden');
                 return;
             }
 
-            btnCheckout.disabled = false;
+            // Jika ada isinya, munculkan form dan baris bawah
+            formContainer.classList.remove('hidden');
+            checkoutBar.classList.remove('hidden');
 
+            // Render setiap item makanan
             cart.forEach((item, index) => {
                 grandTotal += item.subtotal;
-                
-                // Desain per item
+
                 const itemHTML = `
-                    <div class="flex justify-between items-center">
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
                         <div class="flex-1">
-                            <h3 class="font-semibold text-gray-800 leading-tight">${item.nama}</h3>
-                            <p class="text-sm text-gray-500">${item.qty} x ${formatRp(item.harga)}</p>
+                            <h3 class="font-bold text-gray-800 leading-tight mb-1">${item.nama}</h3>
+                            <p class="text-orange-600 font-black text-sm">Rp ${item.harga.toLocaleString('id-ID')}</p>
                         </div>
-                        <div class="text-right ml-4">
-                            <p class="font-bold text-gray-800">${formatRp(item.subtotal)}</p>
-                            <button onclick="hapusItem(${index})" class="text-xs text-red-500 hover:underline mt-1">Hapus</button>
+                        
+                        <div class="flex items-center gap-3 bg-gray-50 p-1 rounded-xl border border-gray-100 ml-4">
+                            <button onclick="updateQty(${index}, -1)" class="w-8 h-8 flex items-center justify-center bg-white text-gray-600 font-bold rounded-lg shadow-sm hover:bg-gray-100">-</button>
+                            <span class="font-bold w-4 text-center text-gray-800">${item.qty}</span>
+                            <button onclick="updateQty(${index}, 1)" class="w-8 h-8 flex items-center justify-center bg-white text-orange-600 font-bold rounded-lg shadow-sm hover:bg-orange-50">+</button>
                         </div>
                     </div>
                 `;
-                container.insertAdjacentHTML('beforeend', itemHTML);
+                container.innerHTML += itemHTML;
             });
 
-            totalEl.innerText = formatRp(grandTotal);
+            // Update Total Uang
+            grandTotalEl.innerText = 'Rp ' + grandTotal.toLocaleString('id-ID');
         }
 
-        // Fungsi menghapus item dari keranjang
-        function hapusItem(index) {
-            cart.splice(index, 1); // Hapus item dari array
-            localStorage.setItem('cafe_cart', JSON.stringify(cart)); // Simpan ulang ke memori
-            renderCart(); // Refresh tampilan
+        // Fungsi menambah/mengurangi jumlah makanan
+        function updateQty(index, change) {
+            cart[index].qty += change;
+            
+            // Jika qty jadi 0, hapus dari array
+            if (cart[index].qty <= 0) {
+                cart.splice(index, 1);
+            } else {
+                // Update subtotal
+                cart[index].subtotal = cart[index].qty * cart[index].harga;
+            }
+
+            // Simpan ke memory dan render ulang
+            localStorage.setItem('cafe_cart', JSON.stringify(cart));
+            loadCart();
         }
 
-        // --- INI ADALAH JEMBATAN KE BACKEND (FETCH API) ---
+        // ==========================================
+        // FUNGSI CHECKOUT AJAX KE CODEIGNITER 4
+        // ==========================================
         async function prosesCheckout() {
-            if (cart.length === 0) return alert("Keranjang kosong!");
+            const noMeja = document.getElementById('no_meja').value;
+            const metodeBayar = document.getElementById('metode_bayar').value;
 
-            // Ambil metode bayar yang dipilih
-            const metodeBayar = document.querySelector('input[name="metode_bayar"]:checked').value;
-            const btnCheckout = document.getElementById('btn-checkout');
+            // Validasi Sederhana
+            if (!noMeja) {
+                Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Nomor meja wajib diisi!' });
+                return;
+            }
 
-            // 1. Siapkan paket data (Payload)
+            if (cart.length === 0) return;
+
+            // Kunci tombol agar tidak di-klik 2 kali (Double Submit)
+            const btn = document.getElementById('btn-checkout');
+            btn.innerHTML = 'Memproses...';
+            btn.disabled = true;
+
+            // Siapkan Paket JSON untuk dikirim ke Controller
             const payload = {
-                no_meja: "<?= esc(session()->get('no_meja')) ?>",
+                items: cart,
+                no_meja: noMeja,
                 metode_bayar: metodeBayar,
-                total_bayar: grandTotal,
-                items: cart // Array berisi id_menu, qty, dll
+                total_bayar: grandTotal
             };
 
-            // Ubah tombol jadi loading
-            btnCheckout.innerText = "Memproses...";
-            btnCheckout.disabled = true;
-
             try {
-                // 2. Kirim data ke Controller CI4 menggunakan method POST
-                const response = await fetch("<?= base_url('checkout/proses') ?>", {
-                    method: "POST",
+                // Fetch API (AJAX) ke Controller Checkout
+                const response = await fetch('<?= base_url('checkout/proses') ?>', {
+                    method: 'POST',
                     headers: {
-                        "Content-Type": "application/json",
-                        "X-Requested-With": "XMLHttpRequest"
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest' // Penting untuk CI4 isAJAX()
                     },
                     body: JSON.stringify(payload)
                 });
 
                 const result = await response.json();
 
-                // 3. Tangani respon dari Server
                 if (result.status === 'success') {
-                    alert("Pesanan berhasil dibuat! Silakan tunggu di meja.");
-                    localStorage.removeItem('cafe_cart'); // Kosongkan keranjang
-                    window.location.href = "<?= base_url('katalog') ?>"; // Kembali ke awal (nanti bisa diarahkan ke halaman status)
+                    // Bersihkan memori keranjang
+                    localStorage.removeItem('cafe_cart');
+                    
+                    // Tampilkan Animasi Sukses
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Pesanan Berhasil!',
+                        text: result.message, // Pesan ini memuat info Poin Loyalitas RFM
+                        confirmButtonColor: '#ea580c',
+                        allowOutsideClick: false
+                    }).then(() => {
+                        // Kembali ke halaman katalog atau profil
+                        window.location.href = '<?= base_url('/') ?>';
+                    });
                 } else {
-                    alert("Gagal memproses pesanan: " + result.message);
-                    btnCheckout.innerText = "Pesan Sekarang";
-                    btnCheckout.disabled = false;
+                    Swal.fire({ icon: 'error', title: 'Gagal', text: result.message });
+                    btn.innerHTML = 'Pesan Sekarang';
+                    btn.disabled = false;
                 }
+
             } catch (error) {
-                alert("Terjadi kesalahan koneksi ke server.");
-                btnCheckout.innerText = "Pesan Sekarang";
-                btnCheckout.disabled = false;
+                console.error('Error:', error);
+                Swal.fire({ icon: 'error', title: 'Error Jaringan', text: 'Gagal terhubung ke server.' });
+                btn.innerHTML = 'Pesan Sekarang';
+                btn.disabled = false;
             }
         }
 
-        // Jalankan render saat halaman dibuka
-        document.addEventListener('DOMContentLoaded', renderCart);
+        // Jalankan saat halaman pertama dibuka
+        document.addEventListener('DOMContentLoaded', loadCart);
     </script>
 </body>
 </html>
