@@ -12,11 +12,14 @@ class RewardAdmin extends BaseController
         
         // Tangkap kata kunci pencarian dari kolom search (jika ada)
         $keyword = $this->request->getGet('q');
+        $db = \Config\Database::connect();
+        $katalog = $db->table('katalog_reward')->get()->getResultArray();
         
         $data = [
             'title'     => 'Tukar Poin Reward - Kafe Gamified',
             'pelanggan' => $pelangganModel->cariPelanggan($keyword),
-            'keyword'   => $keyword
+            'keyword'   => $keyword,
+            'katalog'   => $katalog
         ];
 
         return view('admin/v_reward', $data);
@@ -38,7 +41,15 @@ class RewardAdmin extends BaseController
             $db = \Config\Database::connect();
             $db->query("UPDATE pelanggan SET poin_loyalitas = poin_loyalitas - ? WHERE id_pelanggan = ?", [$poinDipotong, $idPelanggan]);
 
-            session()->setFlashdata('sukses', "Berhasil menukarkan $poinDipotong Poin milik {$user['nama_pelanggan']} untuk mendapatkan: $namaReward!");
+            // Buat kode voucher unik (Contoh: VCR-A1B2C)
+            $kodeVoucher = 'VCR-' . strtoupper(substr(md5(uniqid()), 0, 5));
+            
+            // Simpan voucher ke database
+            $db->query("INSERT INTO pelanggan_voucher (id_pelanggan, nama_reward, kode_voucher, status) VALUES (?, ?, ?, 'aktif')", [
+                $idPelanggan, $namaReward, $kodeVoucher
+            ]);
+
+            session()->setFlashdata('sukses', "Berhasil menukarkan $poinDipotong Poin! Kode Voucher: $kodeVoucher");
         } else {
             session()->setFlashdata('error', "Gagal! Poin {$user['nama_pelanggan']} tidak mencukupi untuk reward tersebut.");
         }

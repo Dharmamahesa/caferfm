@@ -82,6 +82,18 @@
                 <span class="text-lg">🎁</span> Tukar Poin Reward
             </a>
 
+            <a href="<?= base_url('admin/katalog_reward') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all duration-300 <?= ($uri == 'katalog_reward') ? 'bg-white/10 text-white translate-x-1 border border-white/5' : 'text-gray-400 hover:bg-white/5 hover:text-white' ?>">
+                <span class="text-lg">💎</span> Master Reward
+            </a>
+
+            <a href="<?= base_url('admin/misi') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all duration-300 <?= ($uri == 'misi') ? 'bg-white/10 text-white translate-x-1 border border-white/5' : 'text-gray-400 hover:bg-white/5 hover:text-white' ?>">
+                <span class="text-lg">🎯</span> Manajemen Misi
+            </a>
+
+            <a href="<?= base_url('admin/voucher') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all duration-300 <?= ($uri == 'voucher') ? 'bg-white/10 text-white translate-x-1 border border-white/5' : 'text-gray-400 hover:bg-white/5 hover:text-white' ?>">
+                <span class="text-lg">🎟️</span> Manajemen Voucher
+            </a>
+
             <p class="px-4 pt-6 pb-2 text-[10px] font-black text-gray-500 uppercase tracking-widest">Sistem & Utility</p>
 
             <a href="<?= base_url('admin/qr_meja') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all duration-300 <?= ($uri == 'qr_meja') ? 'bg-white/10 text-white translate-x-1 border border-white/5' : 'text-gray-400 hover:bg-white/5 hover:text-white' ?>">

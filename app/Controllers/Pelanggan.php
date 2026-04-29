@@ -50,6 +50,14 @@ class Pelanggan extends BaseController
             $progress = ($poin / 100) * 100;
         }
 
+        // Ambil data voucher pelanggan
+        $db = \Config\Database::connect();
+        $voucher = $db->table('pelanggan_voucher')
+            ->where('id_pelanggan', $idPelanggan)
+            ->orderBy('status', 'ASC')
+            ->orderBy('created_at', 'DESC')
+            ->get()->getResultArray();
+
         // Bungkus data untuk dikirim ke View
         $data = [
             'title'        => 'Profil & Reward - Kafe Gamified',
@@ -57,7 +65,8 @@ class Pelanggan extends BaseController
             'tier'         => $tier,
             'nextTier'     => $nextTier,
             'poinNextTier' => $poinNextTier,
-            'progress'     => round($progress) // Bulatkan persentase
+            'progress'     => round($progress),
+            'voucher'      => $voucher
         ];
 
         return view('pelanggan/v_profil', $data);
@@ -140,7 +149,57 @@ class Pelanggan extends BaseController
                 
             return redirect()->to(base_url('misi_saya'))->with('sukses', 'Berhasil klaim ' . $misi['poin_reward'] . ' Poin!');
         }
-        
         return redirect()->to(base_url('misi_saya'))->with('error', 'Misi belum selesai atau sudah diklaim.');
+    }
+
+    public function tukar_poin()
+    {
+        $idPelanggan = session()->get('id_pelanggan');
+        $db = \Config\Database::connect();
+        
+        $user = $db->table('pelanggan')->where('id_pelanggan', $idPelanggan)->get()->getRowArray();
+        $katalog = $db->table('katalog_reward')->get()->getResultArray();
+        
+        $data = [
+            'title'   => 'Katalog Tukar Poin',
+            'user'    => $user,
+            'katalog' => $katalog
+        ];
+        
+        return view('pelanggan/v_tukar_poin', $data);
+    }
+
+    public function proses_tukar_poin()
+    {
+        $idPelanggan = session()->get('id_pelanggan');
+        $idReward = $this->request->getPost('id_reward');
+        
+        $db = \Config\Database::connect();
+        $user = $db->table('pelanggan')->where('id_pelanggan', $idPelanggan)->get()->getRowArray();
+        $reward = $db->table('katalog_reward')->where('id_reward', $idReward)->get()->getRowArray();
+        
+        if (!$reward) {
+            return redirect()->to(base_url('tukar_poin'))->with('error', 'Item reward tidak valid.');
+        }
+
+        if ($user['poin_loyalitas'] >= $reward['poin_dibutuhkan']) {
+            // Potong poin
+            $db->query("UPDATE pelanggan SET poin_loyalitas = poin_loyalitas - ? WHERE id_pelanggan = ?", [$reward['poin_dibutuhkan'], $idPelanggan]);
+
+            // Generate Kode
+            $kodeVoucher = 'VCR-' . strtoupper(substr(md5(uniqid()), 0, 5));
+            
+            // Simpan Voucher ke profil
+            $db->table('pelanggan_voucher')->insert([
+                'id_pelanggan' => $idPelanggan,
+                'nama_reward'  => $reward['nama_reward'],
+                'kode_voucher' => $kodeVoucher,
+                'status'       => 'aktif'
+            ]);
+
+            return redirect()->to(base_url('profil'))->with('sukses', "Berhasil menukar poin! Reward {$reward['nama_reward']} telah ditambahkan ke Voucher Saya.");
+        }
+        
+        return redirect()->to(base_url('tukar_poin'))->with('error', 'Poin tidak mencukupi untuk reward ini.');
     }
 }

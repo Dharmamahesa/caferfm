@@ -14,6 +14,7 @@ $routes->get('meja/(:num)', 'Katalog::index/$1');
 $routes->get('katalog', 'Katalog::index');
 $routes->get('keranjang', 'Katalog::keranjang');
 $routes->post('checkout/proses', 'Checkout::proses');
+$routes->post('checkout/cek_voucher', 'Checkout::cek_voucher');
 
 // ==============================================================================
 // 2. RUTE AUTENTIKASI PELANGGAN (MEMBER)
@@ -31,6 +32,8 @@ $routes->get('profil', 'Pelanggan::profil', ['filter' => 'authGuard']);
 $routes->get('pesanan_saya', 'Pelanggan::pesanan_saya', ['filter' => 'authGuard']);
 $routes->get('misi_saya', 'Pelanggan::misi_saya', ['filter' => 'authGuard']);
 $routes->post('klaim_misi/(:num)', 'Pelanggan::klaim_misi/$1', ['filter' => 'authGuard']);
+$routes->get('tukar_poin', 'Pelanggan::tukar_poin', ['filter' => 'authGuard']);
+$routes->post('tukar_poin/proses', 'Pelanggan::proses_tukar_poin', ['filter' => 'authGuard']);
 
 
 // ==============================================================================
@@ -81,4 +84,20 @@ $routes->group('admin', ['filter' => 'adminGuard'], static function ($routes) {
     $routes->get('pengaturan', 'Admin::pengaturan');
     $routes->post('pengaturan/update', 'Admin::update_pengaturan');
     $routes->get('qr_meja', 'Admin::qr_meja');
+
+    // Manajemen Gamifikasi & Promosi
+    $routes->get('misi', 'MisiAdmin::index');
+    $routes->post('misi/simpan', 'MisiAdmin::simpan');
+    $routes->post('misi/update/(:num)', 'MisiAdmin::update/$1');
+    $routes->get('misi/hapus/(:num)', 'MisiAdmin::hapus/$1');
+
+    $routes->get('katalog_reward', 'KatalogRewardAdmin::index');
+    $routes->post('katalog_reward/simpan', 'KatalogRewardAdmin::simpan');
+    $routes->post('katalog_reward/update/(:num)', 'KatalogRewardAdmin::update/$1');
+    $routes->get('katalog_reward/hapus/(:num)', 'KatalogRewardAdmin::hapus/$1');
+
+    $routes->get('voucher', 'VoucherAdmin::index');
+    $routes->post('voucher/simpan', 'VoucherAdmin::simpan');
+    $routes->post('voucher/update/(:num)', 'VoucherAdmin::update/$1');
+    $routes->get('voucher/hapus/(:num)', 'VoucherAdmin::hapus/$1');
 });

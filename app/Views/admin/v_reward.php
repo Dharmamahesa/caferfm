@@ -90,10 +90,11 @@
                                 <div class="relative w-full sm:flex-1">
                                     <select name="katalog_reward" id="katalog_reward_<?= $p['id_pelanggan'] ?>" onchange="updateForm(this, <?= $p['id_pelanggan'] ?>)" required class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 outline-none text-sm font-bold text-gray-700 appearance-none transition-all shadow-sm cursor-pointer">
                                         <option value="" data-poin="0">-- Pilih Hadiah Tersedia --</option>
-                                        <option value="Gratis Es Teh Manis" data-poin="50">🌟 50 Poin - Gratis Es Teh Manis</option>
-                                        <option value="Diskon Bill 10%" data-poin="100">🌟 100 Poin - Diskon Bill 10%</option>
-                                        <option value="Gratis 1 Kopi Susu Aren" data-poin="200">🌟 200 Poin - Gratis 1 Kopi Susu Aren</option>
-                                        <option value="Voucher Makan Rp 50.000" data-poin="500">👑 500 Poin - Voucher Makan Rp 50.000</option>
+                                        <?php if(isset($katalog)): foreach($katalog as $k): ?>
+                                            <option value="<?= esc($k['nama_reward']) ?>" data-poin="<?= $k['poin_dibutuhkan'] ?>">
+                                                <?= esc($k['ikon']) ?> <?= number_format($k['poin_dibutuhkan'], 0, ',', '.') ?> Poin - <?= esc($k['nama_reward']) ?>
+                                            </option>
+                                        <?php endforeach; endif; ?>
                                     </select>
                                     <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-400">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>

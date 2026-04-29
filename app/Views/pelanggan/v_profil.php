@@ -76,17 +76,63 @@
         </div>
     </div>
 
+    <!-- Voucher & Reward Saya -->
+    <div class="bg-white rounded-[2rem] p-6 shadow-sm border border-gray-100 relative overflow-hidden group">
+        <div class="absolute right-0 top-0 w-24 h-24 bg-orange-50/50 rounded-bl-[100px] -z-10 group-hover:scale-110 transition-transform"></div>
+        
+        <div class="flex justify-between items-center mb-5">
+            <h3 class="font-black text-gray-800 text-sm tracking-tight flex items-center gap-3">
+                <span class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-sm shadow-inner">🎟️</span>
+                Voucher & Reward Saya
+            </h3>
+        </div>
+        
+        <div class="space-y-3 relative z-10">
+            <?php if(empty($voucher)): ?>
+                <div class="bg-gray-50 rounded-xl p-6 border border-gray-100 text-center border-dashed">
+                    <p class="text-xs text-gray-400 font-bold">Belum ada voucher.</p>
+                    <p class="text-[10px] text-gray-400 mt-1">Tukarkan poinmu dengan reward menarik di kasir!</p>
+                </div>
+            <?php else: ?>
+                <?php foreach($voucher as $v): ?>
+                <div class="<?= $v['status'] == 'aktif' ? 'bg-gradient-to-r from-orange-50 to-orange-100/50 border-orange-200' : 'bg-gray-50 border-gray-100 opacity-60 grayscale' ?> rounded-xl p-4 border flex justify-between items-center group/voucher hover:shadow-md transition-all">
+                    <div>
+                        <p class="text-[10px] font-black <?= $v['status'] == 'aktif' ? 'text-orange-500' : 'text-gray-400' ?> uppercase tracking-widest mb-1"><?= $v['status'] == 'aktif' ? 'Siap Digunakan' : 'Sudah Terpakai' ?></p>
+                        <h4 class="font-bold text-gray-800 text-sm mb-2"><?= esc($v['nama_reward']) ?></h4>
+                        <div class="flex items-center gap-2">
+                            <code class="bg-white px-2 py-1 rounded text-gray-800 font-black text-xs shadow-sm border border-gray-200 select-all"><?= esc($v['kode_voucher']) ?></code>
+                            <?php if($v['status'] == 'aktif'): ?>
+                                <button onclick="salinVoucher('<?= esc($v['kode_voucher']) ?>')" class="text-[10px] bg-gray-800 text-white px-3 py-1 rounded hover:bg-gray-900 transition-colors shadow-sm font-bold flex items-center gap-1 active:scale-95">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                                    Salin
+                                </button>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <?php if($v['status'] == 'aktif'): ?>
+                        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-lg border border-orange-100 group-hover/voucher:rotate-12 transition-transform">✨</div>
+                    <?php else: ?>
+                        <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center shadow-inner text-lg opacity-50">✔️</div>
+                    <?php endif; ?>
+                </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+    </div>
+
     <!-- Quick Links / Menus -->
-    <div class="grid grid-cols-2 gap-4">
-        <a href="<?= base_url('pesanan_saya') ?>" class="bg-white p-5 rounded-[1.5rem] border border-gray-100 shadow-sm hover:shadow-md hover:border-orange-200 transition-all group flex flex-col items-center text-center">
-            <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center text-2xl mb-3 group-hover:scale-110 transition-transform">🧾</div>
-            <h4 class="font-black text-gray-800 text-sm">Riwayat Pesanan</h4>
-            <p class="text-[10px] text-gray-400 font-medium mt-1">Lacak status pesanan</p>
+    <div class="grid grid-cols-3 gap-3">
+        <a href="<?= base_url('tukar_poin') ?>" class="bg-white p-4 rounded-2xl border border-purple-100 shadow-sm hover:shadow-md hover:border-purple-300 transition-all group flex flex-col items-center text-center">
+            <div class="w-10 h-10 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition-transform">💎</div>
+            <h4 class="font-black text-gray-800 text-xs">Tukar Poin</h4>
         </a>
-        <a href="<?= base_url('misi_saya') ?>" class="bg-white p-5 rounded-[1.5rem] border border-gray-100 shadow-sm hover:shadow-md hover:border-blue-200 transition-all group flex flex-col items-center text-center">
-            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-2xl mb-3 group-hover:scale-110 transition-transform">🎯</div>
-            <h4 class="font-black text-gray-800 text-sm">Misi & Tantangan</h4>
-            <p class="text-[10px] text-gray-400 font-medium mt-1">Selesaikan & dapat poin</p>
+        <a href="<?= base_url('pesanan_saya') ?>" class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-orange-200 transition-all group flex flex-col items-center text-center">
+            <div class="w-10 h-10 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition-transform">🧾</div>
+            <h4 class="font-black text-gray-800 text-xs">Riwayat</h4>
+        </a>
+        <a href="<?= base_url('misi_saya') ?>" class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-blue-200 transition-all group flex flex-col items-center text-center">
+            <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition-transform">🎯</div>
+            <h4 class="font-black text-gray-800 text-xs">Misi</h4>
         </a>
     </div>
 
@@ -99,5 +145,23 @@
     </a>
 
 </div>
+
+<script>
+    function salinVoucher(kode) {
+        navigator.clipboard.writeText(kode).then(() => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Tersalin!',
+                text: 'Kode voucher berhasil disalin. Tempelkan saat checkout!',
+                timer: 2000,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end'
+            });
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+        });
+    }
+</script>
 
 <?= $this->endSection() ?>

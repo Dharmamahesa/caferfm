@@ -50,6 +50,58 @@ class Admin extends BaseController
         // Ubah status dari 'pending' menjadi 'selesai' di database
         $pesananModel->updateStatus($idPesanan, 'selesai');
 
+        // ==== LOGIKA UPDATE PROGRESS MISI PELANGGAN ====
+        $db = \Config\Database::connect();
+        $pesanan = $db->table('pesanan')->where('id_pesanan', $idPesanan)->get()->getRowArray();
+        
+        if ($pesanan && $pesanan['id_pelanggan'] != 1) { // 1 = Guest
+            $idPelanggan = $pesanan['id_pelanggan'];
+            
+            // Metrik pesanan saat ini
+            $jmlTransaksi = 1;
+            $nominalBelanja = $pesanan['total_bayar'];
+            
+            // Hitung jumlah minuman
+            $detail = $db->table('detail_pesanan')
+                ->join('menu', 'menu.id_menu = detail_pesanan.id_menu')
+                ->where('id_pesanan', $idPesanan)
+                ->where('menu.kategori', 'minuman')
+                ->get()->getResultArray();
+            $jmlMinuman = 0;
+            foreach($detail as $d) { $jmlMinuman += $d['jumlah']; }
+
+            // Ambil semua misi yang berjalan untuk pelanggan ini
+            $misiBerjalan = $db->table('pelanggan_misi')
+                ->join('misi', 'misi.id_misi = pelanggan_misi.id_misi')
+                ->where('pelanggan_misi.id_pelanggan', $idPelanggan)
+                ->where('pelanggan_misi.status', 'berjalan')
+                ->get()->getResultArray();
+            
+            foreach ($misiBerjalan as $mb) {
+                $progressTambah = 0;
+                if ($mb['tipe_misi'] == 'transaksi') {
+                    $progressTambah = $jmlTransaksi;
+                } elseif ($mb['tipe_misi'] == 'nominal_belanja') {
+                    $progressTambah = $nominalBelanja;
+                } elseif ($mb['tipe_misi'] == 'item_minuman') {
+                    $progressTambah = $jmlMinuman;
+                }
+                
+                if ($progressTambah > 0) {
+                    $newProgress = $mb['progress'] + $progressTambah;
+                    $status = 'berjalan';
+                    if ($newProgress >= $mb['target_jumlah']) {
+                        $newProgress = $mb['target_jumlah']; // limit to max
+                        $status = 'selesai';
+                    }
+                    $db->table('pelanggan_misi')
+                        ->where(['id_pelanggan' => $idPelanggan, 'id_misi' => $mb['id_misi']])
+                        ->update(['progress' => $newProgress, 'status' => $status]);
+                }
+            }
+        }
+        // ===============================================
+
         // Kirim pesan sukses dan kembalikan koki ke halaman dapur
         session()->setFlashdata('sukses', 'Pesanan #' . $idPesanan . ' berhasil diselesaikan!');
         return redirect()->to(base_url('admin/dapur'));

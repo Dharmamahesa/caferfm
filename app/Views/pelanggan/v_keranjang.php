@@ -50,6 +50,20 @@
                     </div>
                 </div>
             </div>
+
+            <div class="pt-2">
+                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                    <span>Punya Kode Voucher?</span>
+                    <span class="bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full text-[8px]">Opsional</span>
+                </label>
+                <div class="flex gap-2">
+                    <input type="text" id="kode_voucher" placeholder="Contoh: VOUCHER50K" class="flex-1 pl-4 pr-4 py-4 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 outline-none font-bold text-gray-800 uppercase transition-all shadow-inner placeholder:normal-case">
+                    <button type="button" onclick="terapkanVoucher()" class="bg-gray-800 text-white px-6 rounded-xl font-black text-sm hover:bg-gray-900 active:scale-95 transition-all shadow-md">
+                        Cek
+                    </button>
+                </div>
+                <p id="pesan_voucher" class="text-xs font-bold mt-2 hidden"></p>
+            </div>
         </div>
     </div>
 
@@ -72,6 +86,10 @@
 <script>
     let cart = JSON.parse(localStorage.getItem('cafe_cart')) || [];
     let grandTotal = 0;
+    let voucherApplied = null;
+    let discountAmount = 0;
+    let idVoucherApplied = null;
+    let idVoucherGlobalApplied = null;
 
     function loadCart() {
         const container = document.getElementById('cart-items-container');
@@ -131,7 +149,7 @@
             container.innerHTML += itemHTML;
         });
 
-        grandTotalEl.innerText = 'Rp ' + grandTotal.toLocaleString('id-ID');
+        updateGrandTotalDisplay();
     }
 
     function updateQty(index, change) {
@@ -143,8 +161,111 @@
             cart[index].subtotal = cart[index].qty * cart[index].harga;
         }
 
+        // Reset voucher if cart changes
+        if(voucherApplied) {
+            voucherApplied = null;
+            discountAmount = 0;
+            idVoucherApplied = null;
+            idVoucherGlobalApplied = null;
+            document.getElementById('kode_voucher').value = '';
+            document.getElementById('pesan_voucher').classList.add('hidden');
+        }
+
         localStorage.setItem('cafe_cart', JSON.stringify(cart));
         loadCart();
+    }
+
+    async function terapkanVoucher() {
+        const kode = document.getElementById('kode_voucher').value.trim().toUpperCase();
+        const pesanEl = document.getElementById('pesan_voucher');
+        const btnCek = document.querySelector('button[onclick="terapkanVoucher()"]');
+        
+        if(!kode) {
+            pesanEl.className = "text-xs font-bold mt-2 text-red-500 animate-fade-in-up";
+            pesanEl.innerText = "⚠️ Masukkan kode voucher dulu!";
+            pesanEl.classList.remove('hidden');
+            return;
+        }
+
+        if(cart.length === 0) return;
+
+        // Visual loading
+        const btnOriginalText = btnCek.innerText;
+        btnCek.innerText = '...';
+        btnCek.disabled = true;
+
+        try {
+            const response = await fetch('<?= base_url('checkout/cek_voucher') ?>', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ kode: kode })
+            });
+
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                voucherApplied = kode;
+                
+                if (result.id_voucher_global) {
+                    idVoucherGlobalApplied = result.id_voucher_global;
+                    idVoucherApplied = null;
+                } else {
+                    idVoucherApplied = result.id_voucher;
+                    idVoucherGlobalApplied = null;
+                }
+                
+                if (result.tipe === 'persen') {
+                    discountAmount = grandTotal * (result.diskon / 100);
+                } else {
+                    discountAmount = result.diskon;
+                }
+
+                pesanEl.className = "text-xs font-bold mt-2 text-green-500 animate-fade-in-up";
+                pesanEl.innerText = "✓ " + result.message;
+            } else {
+                voucherApplied = null;
+                discountAmount = 0;
+                idVoucherApplied = null;
+                idVoucherGlobalApplied = null;
+                pesanEl.className = "text-xs font-bold mt-2 text-red-500 animate-fade-in-up";
+                pesanEl.innerText = "❌ " + result.message;
+            }
+            
+            pesanEl.classList.remove('hidden');
+            updateGrandTotalDisplay();
+
+        } catch (error) {
+            console.error(error);
+            pesanEl.className = "text-xs font-bold mt-2 text-red-500 animate-fade-in-up";
+            pesanEl.innerText = "❌ Terjadi kesalahan saat mengecek voucher.";
+            pesanEl.classList.remove('hidden');
+        } finally {
+            btnCek.innerText = btnOriginalText;
+            btnCek.disabled = false;
+        }
+    }
+
+    function updateGrandTotalDisplay() {
+        if(voucherApplied && voucherApplied === 'DISKON10') {
+            discountAmount = grandTotal * 0.1; // re-calculate percentage
+        }
+
+        let finalTotal = grandTotal - discountAmount;
+        if(finalTotal < 0) finalTotal = 0;
+        
+        const grandTotalEl = document.getElementById('grand-total');
+        
+        if(discountAmount > 0) {
+            grandTotalEl.innerHTML = `
+                <span class="text-gray-400 line-through text-sm mr-2 font-semibold">Rp ${grandTotal.toLocaleString('id-ID')}</span>
+                <span class="text-green-600 drop-shadow-sm">Rp ${finalTotal.toLocaleString('id-ID')}</span>
+            `;
+        } else {
+            grandTotalEl.innerText = 'Rp ' + grandTotal.toLocaleString('id-ID');
+        }
     }
 
     async function prosesCheckout() {
@@ -169,11 +290,17 @@
         btn.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Memproses...';
         btn.disabled = true;
 
+        let finalTotal = grandTotal - discountAmount;
+        if(finalTotal < 0) finalTotal = 0;
+
         const payload = {
             items: cart,
             no_meja: noMeja,
             metode_bayar: metodeBayar,
-            total_bayar: grandTotal
+            total_bayar: finalTotal,
+            voucher: voucherApplied,
+            id_voucher: idVoucherApplied,
+            id_voucher_global: idVoucherGlobalApplied
         };
 
         try {
