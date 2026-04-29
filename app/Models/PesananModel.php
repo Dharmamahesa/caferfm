@@ -151,4 +151,17 @@ class PesananModel extends Model
                   ->orderBy('pesanan.tgl_pesanan', 'DESC')
                   ->get()->getResultArray();
     }
+    public function getRiwayatHariIni()
+    {
+        $db = \Config\Database::connect();
+        
+        return $db->table('pesanan')
+                  ->select('pesanan.*, pelanggan.nama_pelanggan')
+                  ->join('pelanggan', 'pelanggan.id_pelanggan = pesanan.id_pelanggan', 'left')
+                  ->where('pesanan.status_pesanan', 'selesai')
+                  // Filter khusus transaksi hari ini
+                  ->where('DATE(pesanan.tgl_pesanan)', date('Y-m-d')) 
+                  ->orderBy('pesanan.tgl_pesanan', 'ASC')
+                  ->get()->getResultArray();
+    }
 }

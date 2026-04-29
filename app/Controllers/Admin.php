@@ -106,4 +106,70 @@ class Admin extends BaseController
         session()->setFlashdata('sukses', 'Pembayaran pesanan #' . $idPesanan . ' tervalidasi! Tiket otomatis diteruskan ke Dapur.');
         return redirect()->to(base_url('admin/kasir'));
     }
+    // ==========================================================
+    // 6. FITUR CETAK LAPORAN HARIAN (PDF)
+    // ==========================================================
+    public function cetak_laporan()
+    {
+        $pesananModel = new \App\Models\PesananModel();
+
+        $data = [
+            'title'   => 'Laporan Pendapatan Harian',
+            'riwayat' => $pesananModel->getRiwayatHariIni(),
+            'omzet'   => $pesananModel->getOmzetHariIni(),
+            'tanggal' => date('d F Y') // Format tanggal hari ini
+        ];
+
+        return view('admin/v_cetak_laporan', $data);
+    }
+
+    // ==========================================================
+    // 7. PENGATURAN KAFE
+    // ==========================================================
+    public function pengaturan()
+    {
+        $db = \Config\Database::connect();
+        $settings = $db->table('pengaturan')->get()->getResultArray();
+        
+        $dataPengaturan = [];
+        foreach($settings as $s) {
+            $dataPengaturan[$s['key_setting']] = $s['value_setting'];
+        }
+
+        $data = [
+            'title'      => 'Pengaturan Kafe',
+            'pengaturan' => $dataPengaturan
+        ];
+
+        return view('admin/v_pengaturan', $data);
+    }
+
+    public function update_pengaturan()
+    {
+        $db = \Config\Database::connect();
+        $postData = $this->request->getPost();
+        
+        foreach($postData as $key => $val) {
+            $cek = $db->table('pengaturan')->where('key_setting', $key)->countAllResults();
+            if($cek > 0) {
+                $db->table('pengaturan')->where('key_setting', $key)->update(['value_setting' => $val]);
+            } else {
+                $db->table('pengaturan')->insert(['key_setting' => $key, 'value_setting' => $val]);
+            }
+        }
+
+        session()->setFlashdata('sukses', 'Pengaturan berhasil diperbarui!');
+        return redirect()->to(base_url('admin/pengaturan'));
+    }
+
+    // ==========================================================
+    // 8. QR CODE MEJA (SMART ORDERING)
+    // ==========================================================
+    public function qr_meja()
+    {
+        $data = [
+            'title' => 'Smart Ordering - QR Meja'
+        ];
+        return view('admin/v_qr_meja', $data);
+    }
 }

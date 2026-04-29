@@ -28,6 +28,9 @@ $routes->get('auth/logout', 'Auth::logout');
 // 3. RUTE PROFIL & GAMIFIKASI (PROTECTED BY authGuard)
 // ==============================================================================
 $routes->get('profil', 'Pelanggan::profil', ['filter' => 'authGuard']);
+$routes->get('pesanan_saya', 'Pelanggan::pesanan_saya', ['filter' => 'authGuard']);
+$routes->get('misi_saya', 'Pelanggan::misi_saya', ['filter' => 'authGuard']);
+$routes->post('klaim_misi/(:num)', 'Pelanggan::klaim_misi/$1', ['filter' => 'authGuard']);
 
 
 // ==============================================================================
@@ -71,4 +74,11 @@ $routes->group('admin', ['filter' => 'adminGuard'], static function ($routes) {
     // Operasional: Kasir / Verifikasi Pembayaran
     $routes->get('kasir', 'Admin::kasir');
     $routes->get('kasir/verifikasi/(:num)', 'Admin::verifikasi_bayar/$1');
+    // Fitur Cetak Laporan PDF
+    $routes->get('laporan/cetak', 'Admin::cetak_laporan');
+    
+    // Fitur Tambahan
+    $routes->get('pengaturan', 'Admin::pengaturan');
+    $routes->post('pengaturan/update', 'Admin::update_pengaturan');
+    $routes->get('qr_meja', 'Admin::qr_meja');
 });
