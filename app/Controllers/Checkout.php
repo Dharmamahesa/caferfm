@@ -118,10 +118,28 @@ class Checkout extends BaseController
 
             // Panggil Model Pesanan untuk menyimpan ke Database
             $pesananModel = new PesananModel();
+            
+            // Server-side stok check sebelum transaksi
+            $db = \Config\Database::connect();
+            foreach ($json->items as $item) {
+                $menuCek = $db->table('menu')->where('id_menu', $item->id)->get()->getRowArray();
+                if(!$menuCek || $menuCek['stok'] < $item->qty) {
+                    return $this->response->setJSON([
+                        'status'  => 'error',
+                        'message' => 'Gagal: Stok untuk ' . ($menuCek['nama_item'] ?? 'item') . ' tidak mencukupi.'
+                    ]);
+                }
+            }
+
             $simpan = $pesananModel->simpanPesanan($dataPesanan, $dataDetail);
 
             // Jika transaksi Database sukses
             if ($simpan) {
+                // Kurangi stok menu
+                foreach ($json->items as $item) {
+                    $db->query("UPDATE menu SET stok = stok - ? WHERE id_menu = ?", [$item->qty, $item->id]);
+                }
+
                 // Hapus session meja karena pesanan sudah tercatat
                 session()->remove('no_meja');
 

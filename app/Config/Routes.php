@@ -67,9 +67,11 @@ $routes->group('admin', ['filter' => 'adminGuard'], static function ($routes) {
 
     // Operasional: Riwayat Transaksi
     $routes->get('riwayat', 'Admin::riwayat');
+    $routes->get('riwayat/refund/(:num)', 'Admin::refund_pesanan/$1');
 
     // Gamifikasi & CRM: Analitik Segmentasi RFM
     $routes->get('rfm', 'Admin::rfm');
+    $routes->post('rfm/broadcast', 'Admin::broadcast_rfm');
 
     // Gamifikasi & CRM: Penukaran Poin Reward
     $routes->get('reward', 'RewardAdmin::index');
@@ -84,6 +86,7 @@ $routes->group('admin', ['filter' => 'adminGuard'], static function ($routes) {
     $routes->get('pengaturan', 'Admin::pengaturan');
     $routes->post('pengaturan/update', 'Admin::update_pengaturan');
     $routes->get('qr_meja', 'Admin::qr_meja');
+    $routes->get('map_meja', 'Admin::map_meja');
 
     // Manajemen Gamifikasi & Promosi
     $routes->get('misi', 'MisiAdmin::index');

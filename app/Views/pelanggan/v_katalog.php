@@ -51,7 +51,7 @@
 </div>
 
 <!-- Menu Grid -->
-<div class="px-5 pb-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5" id="menu-container">
+<div class="px-5 pb-6 grid grid-cols-2 sm:grid-cols-3 gap-4 lg:gap-5" id="menu-container">
     <?php 
     $semua_menu = array_merge($makanan ?? [], $minuman ?? [], $snack ?? []);
     
@@ -78,13 +78,26 @@
                 
                 <div class="flex-grow px-1">
                     <h3 class="font-bold text-gray-800 leading-tight mb-1.5 line-clamp-2"><?= esc($item['nama_item']) ?></h3>
-                    <p class="text-orange-600 font-black text-lg tracking-tight">Rp <?= number_format($item['harga'], 0, ',', '.') ?></p>
+                    <div class="flex items-center justify-between">
+                        <p class="text-orange-600 font-black text-lg tracking-tight">Rp <?= number_format($item['harga'], 0, ',', '.') ?></p>
+                        <?php if($item['stok'] <= 5 && $item['stok'] > 0): ?>
+                            <span class="text-[9px] font-black text-red-500 bg-red-50 px-2 py-0.5 rounded-md uppercase tracking-wider">Sisa <?= esc($item['stok']) ?></span>
+                        <?php elseif($item['stok'] > 5): ?>
+                            <span class="text-[9px] font-black text-green-500 bg-green-50 px-2 py-0.5 rounded-md uppercase tracking-wider">Tersedia</span>
+                        <?php endif; ?>
+                    </div>
                 </div>
 
-                <button onclick="addToCart(<?= $item['id_menu'] ?>, '<?= addslashes($item['nama_item']) ?>', <?= $item['harga'] ?>)" class="mt-4 w-full bg-orange-50 text-orange-600 py-2.5 rounded-xl font-bold text-sm hover:bg-orange-500 hover:text-white transition-all duration-300 active:scale-95 hover:shadow-md hover:shadow-orange-500/20 flex justify-center items-center gap-1.5 group/btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover/btn:rotate-90 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" /></svg>
-                    Tambah
-                </button>
+                <?php if($item['stok'] > 0): ?>
+                    <button onclick="addToCart(<?= $item['id_menu'] ?>, '<?= addslashes($item['nama_item']) ?>', <?= $item['harga'] ?>, <?= $item['stok'] ?>)" class="mt-4 w-full bg-orange-50 text-orange-600 py-2.5 rounded-xl font-bold text-sm hover:bg-orange-500 hover:text-white transition-all duration-300 active:scale-95 hover:shadow-md hover:shadow-orange-500/20 flex justify-center items-center gap-1.5 group/btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover/btn:rotate-90 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" /></svg>
+                        Tambah
+                    </button>
+                <?php else: ?>
+                    <button disabled class="mt-4 w-full bg-gray-100 text-gray-400 py-2.5 rounded-xl font-bold text-sm cursor-not-allowed flex justify-center items-center gap-1.5 border border-gray-200">
+                        Habis
+                    </button>
+                <?php endif; ?>
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
@@ -98,8 +111,8 @@
 </div>
 
 <!-- Floating Cart -->
-<div id="floating-cart" class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-gray-100 p-5 shadow-[0_-10px_25px_-5px_rgba(0,0,0,0.08)] transform translate-y-full transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) z-50 rounded-t-[2rem]">
-    <div class="max-w-md mx-auto flex justify-between items-center">
+<div id="floating-cart" class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-gray-100 p-5 shadow-[0_-10px_25px_-5px_rgba(0,0,0,0.08)] transform translate-y-full transition-transform duration-500 z-50 rounded-t-[2rem]">
+    <div class="max-w-2xl mx-auto flex justify-between items-center">
         <div class="flex items-center gap-4">
             <div class="bg-orange-100 text-orange-600 w-12 h-12 rounded-2xl flex items-center justify-center relative shadow-inner">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
@@ -191,14 +204,24 @@
     // --- 2. Logika Keranjang (Local Storage) ---
     let cart = JSON.parse(localStorage.getItem('cafe_cart')) || [];
 
-    function addToCart(id, nama, harga) {
+    function addToCart(id, nama, harga, stok = 999) {
         let existingItem = cart.find(item => item.id === id);
+        
         if (existingItem) {
+            if (existingItem.qty >= stok) {
+                alert('Maaf, stok item ini hanya tersisa ' + stok + '.');
+                return;
+            }
             existingItem.qty += 1;
             existingItem.subtotal = existingItem.qty * harga;
         } else {
-            cart.push({ id: id, nama: nama, harga: harga, qty: 1, subtotal: harga });
+            if (stok < 1) {
+                alert('Maaf, stok item ini sedang habis.');
+                return;
+            }
+            cart.push({ id: id, nama: nama, harga: harga, qty: 1, subtotal: harga, stok_max: stok });
         }
+        
         localStorage.setItem('cafe_cart', JSON.stringify(cart));
         updateCartUI();
         

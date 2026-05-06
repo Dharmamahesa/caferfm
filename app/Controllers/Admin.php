@@ -13,12 +13,14 @@ class Admin extends BaseController
     {
         $pesananModel = new PesananModel();
 
-        // Mengambil data ringkasan untuk hari ini
+        // Mengambil data ringkasan untuk hari ini dan analitik
         $data = [
-            'title'         => 'Dashboard Admin - Kafe Gamified',
-            'omzet'         => $pesananModel->getOmzetHariIni(),
-            'total_pesanan' => $pesananModel->getTotalPesananHariIni(),
-            'pesanan_baru'  => $pesananModel->getPesananTerbaru(5) // Ambil 5 transaksi terakhir untuk tabel
+            'title'             => 'Dashboard Admin - Kafe Gamified',
+            'omzet'             => $pesananModel->getOmzetHariIni(),
+            'total_pesanan'     => $pesananModel->getTotalPesananHariIni(),
+            'pesanan_baru'      => $pesananModel->getPesananTerbaru(5),
+            'grafik_penjualan'  => $pesananModel->getPenjualan7HariTerakhir(),
+            'menu_terlaris'     => $pesananModel->getMenuTerlaris(5)
         ];
 
         return view('admin/v_dashboard', $data);
@@ -107,16 +109,77 @@ class Admin extends BaseController
         return redirect()->to(base_url('admin/dapur'));
     }
     // ==========================================================
+    // 3.5 AKSI REFUND PESANAN (TOMBOL DI RIWAYAT)
+    // ==========================================================
+    public function refund_pesanan($idPesanan)
+    {
+        $pesananModel = new PesananModel();
+        
+        // 1. Ubah status pesanan menjadi 'refund'
+        $pesananModel->updateStatus($idPesanan, 'refund');
+
+        // 2. Kembalikan stok menu yang di-refund
+        $db = \Config\Database::connect();
+        $detailPesanan = $db->table('detail_pesanan')->where('id_pesanan', $idPesanan)->get()->getResultArray();
+        
+        foreach ($detailPesanan as $item) {
+            $db->query("UPDATE menu SET stok = stok + ? WHERE id_menu = ?", [$item['jumlah'], $item['id_menu']]);
+        }
+
+        session()->setFlashdata('sukses', 'Pesanan #' . $idPesanan . ' berhasil di-refund dan stok telah dikembalikan.');
+        return redirect()->to(base_url('admin/riwayat'));
+    }
+
+    // ==========================================================
+    // 3.8 BROADCAST PROMO RFM
+    // ==========================================================
+    public function broadcast_rfm()
+    {
+        $segment = $this->request->getPost('segment');
+        $namaVoucher = $this->request->getPost('nama_voucher');
+        $kodeVoucher = strtoupper(substr(md5(uniqid()), 0, 8)); // Generate random code
+
+        // Dapatkan semua pelanggan
+        $rfmModel = new \App\Models\RfmModel();
+        $semuaPelanggan = $rfmModel->getAllCustomerRfm();
+        
+        $db = \Config\Database::connect();
+        $count = 0;
+
+        foreach($semuaPelanggan as $p) {
+            if($p['segment'] == $segment) {
+                // Beri voucher pribadi
+                $db->table('pelanggan_voucher')->insert([
+                    'id_pelanggan' => $p['id_pelanggan'],
+                    'nama_reward'  => $namaVoucher,
+                    'kode_voucher' => $kodeVoucher . $p['id_pelanggan'],
+                    'status'       => 'aktif',
+                    'tgl_klaim'    => date('Y-m-d H:i:s')
+                ]);
+                $count++;
+            }
+        }
+
+        session()->setFlashdata('sukses', "Berhasil mengirim $count voucher '$namaVoucher' ke segmen $segment!");
+        return redirect()->to(base_url('admin/rfm'));
+    }
+
+    // ==========================================================
     // 4. RIWAYAT TRANSAKSI & PENDAPATAN
     // ==========================================================
     public function riwayat()
     {
         $pesananModel = new PesananModel();
+        
+        $startDate = $this->request->getGet('start_date');
+        $endDate = $this->request->getGet('end_date');
 
         $data = [
-            'title'   => 'Riwayat Transaksi - Kafe Gamified',
-            'riwayat' => $pesananModel->getRiwayatSelesai(),
-            'omzet'   => $pesananModel->getOmzetHariIni() // Panggil ulang untuk info di atas tabel
+            'title'      => 'Riwayat Transaksi - Kafe Gamified',
+            'riwayat'    => $pesananModel->getRiwayatSelesai($startDate, $endDate),
+            'omzet'      => $pesananModel->getOmzetHariIni(), // Panggil ulang untuk info di atas tabel
+            'start_date' => $startDate,
+            'end_date'   => $endDate
         ];
 
         return view('admin/v_riwayat', $data);
@@ -165,11 +228,31 @@ class Admin extends BaseController
     {
         $pesananModel = new \App\Models\PesananModel();
 
+        $startDate = $this->request->getGet('start_date');
+        $endDate = $this->request->getGet('end_date');
+
+        if($startDate && $endDate) {
+            $riwayat = $pesananModel->getRiwayatSelesai($startDate, $endDate);
+            $tanggal = date('d M Y', strtotime($startDate)) . ' - ' . date('d M Y', strtotime($endDate));
+            
+            // Hitung total khusus rentang ini
+            $totalOmzet = 0;
+            foreach($riwayat as $r) {
+                if($r['status_pesanan'] != 'refund') {
+                    $totalOmzet += $r['total_bayar'];
+                }
+            }
+        } else {
+            $riwayat = $pesananModel->getRiwayatHariIni();
+            $tanggal = date('d F Y');
+            $totalOmzet = $pesananModel->getOmzetHariIni();
+        }
+
         $data = [
-            'title'   => 'Laporan Pendapatan Harian',
-            'riwayat' => $pesananModel->getRiwayatHariIni(),
-            'omzet'   => $pesananModel->getOmzetHariIni(),
-            'tanggal' => date('d F Y') // Format tanggal hari ini
+            'title'   => 'Laporan Pendapatan',
+            'riwayat' => $riwayat,
+            'omzet'   => $totalOmzet,
+            'tanggal' => $tanggal
         ];
 
         return view('admin/v_cetak_laporan', $data);
@@ -223,5 +306,30 @@ class Admin extends BaseController
             'title' => 'Smart Ordering - QR Meja'
         ];
         return view('admin/v_qr_meja', $data);
+    }
+
+    // ==========================================================
+    // 9. VISUAL MAP MEJA
+    // ==========================================================
+    public function map_meja()
+    {
+        $pesananModel = new \App\Models\PesananModel();
+        
+        // Ambil pesanan yang masih aktif (belum_bayar atau pending)
+        $db = \Config\Database::connect();
+        $mejaAktif = $db->table('pesanan')
+                        ->select('no_meja')
+                        ->whereIn('status_pesanan', ['belum_bayar', 'pending'])
+                        ->groupBy('no_meja')
+                        ->get()->getResultArray();
+        
+        $activeTables = array_column($mejaAktif, 'no_meja');
+
+        $data = [
+            'title' => 'Visual Map Meja Kafe',
+            'activeTables' => $activeTables,
+            'totalTables' => 20 // Misal ada 20 meja
+        ];
+        return view('admin/v_map_meja', $data);
     }
 }

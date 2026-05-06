@@ -2,34 +2,36 @@
 
 <?= $this->section('content') ?>
 
-<div class="mb-8 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 animate-fade-in-up">
+<div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 animate-fade-in-up">
     <div>
-        <h1 class="text-3xl font-black text-gray-800 tracking-tight flex items-center gap-3">
+        <h1 class="text-2xl md:text-3xl font-black text-gray-800 tracking-tight flex items-center gap-3">
             <span class="bg-blue-100 text-blue-600 p-2 rounded-xl shadow-inner">🎯</span> 
             Manajemen Misi Gamifikasi
         </h1>
-        <p class="text-gray-500 font-medium mt-2">Buat dan kelola tantangan berhadiah poin untuk pelanggan.</p>
+        <p class="text-gray-500 font-medium mt-1 text-sm">Buat dan kelola tantangan berhadiah poin untuk pelanggan.</p>
     </div>
-    <button onclick="document.getElementById('modal-misi').classList.remove('hidden')" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3.5 rounded-xl font-bold shadow-lg shadow-blue-500/30 hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2">
+    <button onclick="document.getElementById('modal-misi').classList.remove('hidden')" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-5 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/30 hover:shadow-xl hover:-translate-y-0.5 active:scale-95 transition-all flex items-center justify-center gap-2 self-start sm:self-auto">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" /></svg>
-        Tambah Misi Baru
+        Tambah Misi
     </button>
 </div>
 
 <?php if(session()->getFlashdata('sukses')): ?>
-    <div class="bg-green-50 text-green-700 p-4 rounded-xl mb-6 font-bold border border-green-200 animate-fade-in-up">
+    <div class="bg-green-50 text-green-700 p-4 rounded-xl mb-6 font-bold border border-green-200 animate-fade-in-up flex items-center gap-3">
+        <div class="w-7 h-7 bg-green-500 rounded-full flex items-center justify-center text-white flex-shrink-0">✓</div>
         <?= session()->getFlashdata('sukses') ?>
     </div>
 <?php endif; ?>
 
-<div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden animate-fade-in-up">
+<!-- Desktop Table -->
+<div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden animate-fade-in-up hidden md:block">
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-gray-50 text-gray-400 text-xs uppercase font-black border-b border-gray-100">
                     <th class="px-6 py-4">Nama & Deskripsi Misi</th>
                     <th class="px-6 py-4">Tipe Misi</th>
-                    <th class="px-6 py-4">Target Jumlah</th>
+                    <th class="px-6 py-4">Target</th>
                     <th class="px-6 py-4">Reward Poin</th>
                     <th class="px-6 py-4 text-right">Aksi</th>
                 </tr>
@@ -62,12 +64,49 @@
     </div>
 </div>
 
+<!-- Mobile Card View -->
+<div class="space-y-4 animate-fade-in-up md:hidden">
+    <?php if(empty($misi)): ?>
+        <div class="bg-white rounded-2xl p-10 text-center border border-gray-100 shadow-sm">
+            <div class="text-3xl mb-3">🎯</div>
+            <p class="text-gray-400 font-bold text-sm">Belum ada data misi.</p>
+        </div>
+    <?php else: ?>
+        <?php foreach($misi as $m): ?>
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="p-4 border-b border-gray-50">
+                <div class="flex items-start justify-between gap-3">
+                    <div class="flex-1">
+                        <p class="font-black text-gray-800"><?= esc($m['nama_misi']) ?></p>
+                        <p class="text-xs text-gray-500 mt-1"><?= esc($m['deskripsi']) ?></p>
+                    </div>
+                    <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-lg text-[10px] font-black uppercase flex-shrink-0"><?= esc($m['tipe_misi']) ?></span>
+                </div>
+            </div>
+            <div class="p-4 flex items-center justify-between bg-gray-50/50">
+                <div class="flex items-center gap-4">
+                    <div>
+                        <p class="text-[10px] font-black text-gray-400 uppercase">Target</p>
+                        <p class="font-bold text-gray-800 text-sm"><?= number_format($m['target_jumlah'], 0, ',', '.') ?></p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black text-gray-400 uppercase">Reward</p>
+                        <p class="font-black text-orange-600 text-sm">+<?= $m['poin_reward'] ?> pts</p>
+                    </div>
+                </div>
+                <a href="<?= base_url('admin/misi/hapus/' . $m['id_misi']) ?>" onclick="return confirm('Hapus misi ini?')" class="bg-red-50 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors shadow-sm">Hapus</a>
+            </div>
+        </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</div>
+
 <!-- Modal Tambah Misi -->
-<div id="modal-misi" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl p-6 relative animate-fade-in-up">
-        <button onclick="document.getElementById('modal-misi').classList.add('hidden')" class="absolute right-6 top-6 text-gray-400 hover:text-gray-600 font-bold text-xl">&times;</button>
+<div id="modal-misi" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4" style="display:none" onclick="if(event.target===this)this.style.display='none'">
+    <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl p-6 relative animate-fade-in-up max-h-[90vh] overflow-y-auto">
+        <button onclick="document.getElementById('modal-misi').classList.add('hidden');document.getElementById('modal-misi').style.display='none'" class="absolute right-5 top-5 text-gray-400 hover:text-gray-600 font-bold text-xl w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors">&times;</button>
         
-        <h2 class="text-2xl font-black text-gray-800 mb-6 flex items-center gap-2">
+        <h2 class="text-xl md:text-2xl font-black text-gray-800 mb-6 flex items-center gap-2">
             <span class="text-blue-500">🎯</span> Tambah Misi Gamifikasi
         </h2>
         
@@ -78,10 +117,10 @@
             </div>
             <div>
                 <label class="block text-xs font-black text-gray-500 uppercase mb-2">Deskripsi</label>
-                <textarea name="deskripsi" required rows="2" placeholder="Contoh: Beli 5 minuman bulan ini." class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-bold text-gray-800 transition-all"></textarea>
+                <textarea name="deskripsi" required rows="2" placeholder="Contoh: Beli 5 minuman bulan ini." class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-bold text-gray-800 transition-all resize-none"></textarea>
             </div>
             <div>
-                <label class="block text-xs font-black text-gray-500 uppercase mb-2">Tipe Misi (Cara Mencapai Target)</label>
+                <label class="block text-xs font-black text-gray-500 uppercase mb-2">Tipe Misi</label>
                 <select name="tipe_misi" required class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-bold text-gray-800 transition-all">
                     <option value="transaksi">Berdasarkan Total Kunjungan / Transaksi</option>
                     <option value="item_minuman">Berdasarkan Jumlah Minuman Dibeli</option>
@@ -114,6 +153,26 @@
     .animate-fade-in-up {
         animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
+    #modal-misi:not(.hidden) {
+        display: flex !important;
+    }
 </style>
+
+<script>
+    // Fix modal toggle
+    document.querySelector('[onclick*="modal-misi"]') && document.querySelectorAll('[onclick*="modal-misi"]').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const modal = document.getElementById('modal-misi');
+            if(modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                modal.style.display = 'flex';
+            } else {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+            }
+        });
+    });
+</script>
 
 <?= $this->endSection() ?>

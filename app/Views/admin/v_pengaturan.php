@@ -2,12 +2,12 @@
 
 <?= $this->section('content') ?>
 
-<div class="mb-8 animate-fade-in-up">
-    <h1 class="text-3xl font-black text-gray-800 tracking-tight flex items-center gap-3">
+<div class="mb-6 animate-fade-in-up">
+    <h1 class="text-2xl md:text-3xl font-black text-gray-800 tracking-tight flex items-center gap-3">
         <span class="bg-gray-100 text-gray-600 p-2 rounded-xl shadow-inner">⚙️</span> 
         Pengaturan Sistem Kafe
     </h1>
-    <p class="text-gray-500 font-medium mt-2">Konfigurasi variabel dinamis aplikasi tanpa perlu menyentuh kode program.</p>
+    <p class="text-gray-500 font-medium mt-1 text-sm">Konfigurasi variabel dinamis aplikasi tanpa perlu menyentuh kode program.</p>
 </div>
 
 <?php if(session()->getFlashdata('sukses')): ?>

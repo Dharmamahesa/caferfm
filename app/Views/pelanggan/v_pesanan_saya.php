@@ -12,7 +12,7 @@
     </div>
 </div>
 
-<div class="max-w-md mx-auto p-5 mt-2 space-y-5 animate-fade-in-up">
+<div class="max-w-2xl mx-auto p-5 mt-2 space-y-5 animate-fade-in-up">
 
     <?php if(empty($pesanan)): ?>
         <div class="text-center py-16 bg-white rounded-[2rem] border border-gray-100 shadow-sm">

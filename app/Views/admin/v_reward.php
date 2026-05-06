@@ -2,12 +2,12 @@
 
 <?= $this->section('content') ?>
 
-<div class="mb-8 animate-fade-in-up">
-    <h1 class="text-3xl font-black text-gray-800 tracking-tight flex items-center gap-3">
+<div class="mb-6 animate-fade-in-up">
+    <h1 class="text-2xl md:text-3xl font-black text-gray-800 tracking-tight flex items-center gap-3">
         <span class="bg-purple-100 text-purple-600 p-2 rounded-xl shadow-inner">🎁</span> 
         Penukaran Poin Reward
     </h1>
-    <p class="text-gray-500 font-medium mt-2">Bantu pelanggan menukarkan poin loyalitas mereka dengan hadiah menarik.</p>
+    <p class="text-gray-500 font-medium mt-1 text-sm">Bantu pelanggan menukarkan poin loyalitas mereka dengan hadiah menarik.</p>
 </div>
 
 <?php if(session()->getFlashdata('sukses')): ?>
@@ -52,14 +52,15 @@
     </form>
 </div>
 
-<div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden animate-fade-in-up">
+<!-- Desktop Table -->
+<div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden animate-fade-in-up hidden md:block">
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-gray-50/80 text-gray-400 text-[10px] uppercase font-black tracking-widest border-b border-gray-100">
-                    <th class="px-8 py-5">Nama Pelanggan</th>
-                    <th class="px-8 py-5">Saldo Poin</th>
-                    <th class="px-8 py-5">Aksi Tukar Reward</th>
+                    <th class="px-6 py-5">Nama Pelanggan</th>
+                    <th class="px-6 py-5">Saldo Poin</th>
+                    <th class="px-6 py-5">Aksi Tukar Reward</th>
                 </tr>
             </thead>
             <tbody class="text-sm">
@@ -73,17 +74,17 @@
                 <?php else: ?>
                     <?php foreach($pelanggan as $p): ?>
                     <tr class="border-b border-gray-50 hover:bg-purple-50/30 transition-colors group">
-                        <td class="px-8 py-6">
+                        <td class="px-6 py-5">
                             <p class="font-black text-gray-800 text-lg tracking-tight"><?= esc($p['nama_pelanggan']) ?></p>
                             <p class="text-[10px] text-gray-400 font-mono font-bold uppercase tracking-wider mt-0.5">ID: <?= $p['id_pelanggan'] ?></p>
                         </td>
-                        <td class="px-8 py-6">
-                            <div class="inline-block bg-orange-50 px-4 py-2 rounded-xl border border-orange-100 shadow-sm transform group-hover:scale-105 transition-transform">
+                        <td class="px-6 py-5">
+                            <div class="inline-block bg-orange-50 px-4 py-2 rounded-xl border border-orange-100 shadow-sm">
                                 <span class="text-2xl font-black text-orange-600 drop-shadow-sm"><?= esc($p['poin_loyalitas']) ?></span> 
                                 <span class="text-xs text-orange-400 font-bold tracking-widest uppercase">pts</span>
                             </div>
                         </td>
-                        <td class="px-8 py-6">
+                        <td class="px-6 py-5">
                             <form action="<?= base_url('admin/reward/proses') ?>" method="POST" class="flex flex-col sm:flex-row gap-3 items-center" onsubmit="return confirm('Proses penukaran poin ini? Pastikan reward diberikan kepada pelanggan.');">
                                 <input type="hidden" name="id_pelanggan" value="<?= $p['id_pelanggan'] ?>">
                                 
@@ -104,9 +105,8 @@
                                 <input type="hidden" name="nama_reward" id="nama_reward_<?= $p['id_pelanggan'] ?>" value="">
                                 <input type="hidden" name="poin_dibutuhkan" id="poin_dibutuhkan_<?= $p['id_pelanggan'] ?>" value="0">
 
-                                <button type="submit" class="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-purple-600 text-white font-black px-6 py-3.5 rounded-xl hover:from-purple-600 hover:to-purple-700 shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 active:scale-95 transition-all text-sm flex items-center justify-center gap-2 group/btn">
+                                <button type="submit" class="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-purple-600 text-white font-black px-6 py-3.5 rounded-xl hover:from-purple-600 hover:to-purple-700 shadow-lg shadow-purple-500/30 active:scale-95 transition-all text-sm flex items-center justify-center gap-2">
                                     Tukar
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover/btn:rotate-12 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                                 </button>
                             </form>
                         </td>
@@ -116,6 +116,54 @@
             </tbody>
         </table>
     </div>
+</div>
+
+<!-- Mobile Card View -->
+<div class="space-y-4 animate-fade-in-up md:hidden">
+    <?php if(empty($pelanggan)): ?>
+        <div class="bg-white rounded-2xl p-10 text-center border border-gray-100 shadow-sm">
+            <div class="text-3xl mb-3">🔍</div>
+            <p class="text-gray-400 font-bold text-sm">Pelanggan tidak ditemukan.</p>
+        </div>
+    <?php else: ?>
+        <?php foreach($pelanggan as $p): ?>
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="p-4 border-b border-gray-50 flex items-center justify-between">
+                <div>
+                    <p class="font-black text-gray-800"><?= esc($p['nama_pelanggan']) ?></p>
+                    <p class="text-[10px] text-gray-400 font-mono mt-0.5">ID: <?= $p['id_pelanggan'] ?></p>
+                </div>
+                <div class="bg-orange-50 px-3 py-1.5 rounded-xl border border-orange-100 shadow-sm">
+                    <span class="text-xl font-black text-orange-600"><?= esc($p['poin_loyalitas']) ?></span>
+                    <span class="text-xs text-orange-400 font-bold"> pts</span>
+                </div>
+            </div>
+            <div class="p-4">
+                <form action="<?= base_url('admin/reward/proses') ?>" method="POST" class="flex flex-col gap-3" onsubmit="return confirm('Proses penukaran poin ini?');">
+                    <input type="hidden" name="id_pelanggan" value="<?= $p['id_pelanggan'] ?>">
+                    <div class="relative">
+                        <select name="katalog_reward" id="katalog_reward_m_<?= $p['id_pelanggan'] ?>" onchange="updateForm(this, '<?= $p['id_pelanggan'] ?>')" required class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-purple-500 outline-none text-sm font-bold text-gray-700 appearance-none cursor-pointer">
+                            <option value="" data-poin="0">-- Pilih Hadiah --</option>
+                            <?php if(isset($katalog)): foreach($katalog as $k): ?>
+                                <option value="<?= esc($k['nama_reward']) ?>" data-poin="<?= $k['poin_dibutuhkan'] ?>">
+                                    <?= esc($k['ikon']) ?> <?= number_format($k['poin_dibutuhkan'], 0, ',', '.') ?> pts - <?= esc($k['nama_reward']) ?>
+                                </option>
+                            <?php endforeach; endif; ?>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </div>
+                    </div>
+                    <input type="hidden" name="nama_reward" id="nama_reward_<?= $p['id_pelanggan'] ?>" value="">
+                    <input type="hidden" name="poin_dibutuhkan" id="poin_dibutuhkan_<?= $p['id_pelanggan'] ?>" value="0">
+                    <button type="submit" class="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white font-black py-3 rounded-xl shadow-md active:scale-95 transition-all text-sm flex items-center justify-center gap-2">
+                        Tukar Poin
+                    </button>
+                </form>
+            </div>
+        </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
 </div>
 
 <script>

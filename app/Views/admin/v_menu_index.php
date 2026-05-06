@@ -2,31 +2,32 @@
 
 <?= $this->section('content') ?>
 
-<div class="mb-8 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 animate-fade-in-up">
+<div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 animate-fade-in-up">
     <div>
-        <h1 class="text-3xl font-black text-gray-800 tracking-tight flex items-center gap-3">
+        <h1 class="text-2xl md:text-3xl font-black text-gray-800 tracking-tight flex items-center gap-3">
             <span class="bg-orange-100 text-orange-600 p-2 rounded-xl shadow-inner">🍔</span> 
             Manajemen Menu
         </h1>
-        <p class="text-gray-500 font-medium mt-2">Kelola daftar makanan, minuman, dan snack di Kafe Anda.</p>
+        <p class="text-gray-500 font-medium mt-1 text-sm">Kelola daftar makanan, minuman, dan snack di Kafe Anda.</p>
     </div>
-    <a href="<?= base_url('admin/menu/tambah') ?>" class="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3.5 rounded-xl font-bold shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:-translate-y-0.5 active:scale-95 transition-all flex items-center gap-2 group whitespace-nowrap">
+    <a href="<?= base_url('admin/menu/tambah') ?>" class="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-5 py-3 rounded-xl font-bold shadow-lg shadow-orange-500/30 hover:shadow-xl hover:-translate-y-0.5 active:scale-95 transition-all flex items-center justify-center gap-2 group self-start sm:self-auto whitespace-nowrap">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:rotate-90 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" /></svg>
         Tambah Menu
     </a>
 </div>
 
 <?php if(session()->getFlashdata('sukses')): ?>
-    <div class="bg-gradient-to-r from-green-50 to-green-100 text-green-700 p-5 rounded-2xl mb-8 font-bold border border-green-200 shadow-sm flex items-center justify-between animate-fade-in-up">
+    <div class="bg-gradient-to-r from-green-50 to-green-100 text-green-700 p-4 rounded-2xl mb-6 font-bold border border-green-200 shadow-sm flex items-center justify-between animate-fade-in-up">
         <div class="flex items-center gap-3">
-            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white shadow-inner border border-green-400">✓</div>
+            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white shadow-inner border border-green-400 flex-shrink-0">✓</div>
             <?= session()->getFlashdata('sukses') ?>
         </div>
-        <button onclick="this.parentElement.style.display='none'" class="text-green-500 hover:text-green-700 p-2">✖</button>
+        <button onclick="this.parentElement.style.display='none'" class="text-green-500 hover:text-green-700 p-2 flex-shrink-0">✖</button>
     </div>
 <?php endif; ?>
 
-<div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden animate-fade-in-up">
+<!-- Desktop Table (md+) -->
+<div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden animate-fade-in-up hidden md:block">
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead>
@@ -35,13 +36,14 @@
                     <th class="px-6 py-5">Nama Item</th>
                     <th class="px-6 py-5">Kategori</th>
                     <th class="px-6 py-5">Harga</th>
+                    <th class="px-6 py-5 text-center">Stok</th>
                     <th class="px-6 py-5 text-right">Aksi</th>
                 </tr>
             </thead>
             <tbody class="text-sm">
                 <?php if(empty($menu)): ?>
                     <tr>
-                        <td colspan="5" class="px-6 py-16 text-center">
+                        <td colspan="6" class="px-6 py-16 text-center">
                             <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner">🍽️</div>
                             <p class="text-gray-400 font-bold">Belum ada data menu. Silakan tambahkan menu baru.</p>
                         </td>
@@ -75,8 +77,14 @@
                                 Rp <?= number_format($m['harga'], 0, ',', '.') ?>
                             </p>
                         </td>
+                        <td class="px-6 py-4 text-center">
+                            <?php $stokColor = $m['stok'] <= 5 ? 'bg-red-50 text-red-600 border-red-100' : 'bg-green-50 text-green-600 border-green-100'; ?>
+                            <span class="font-black <?= $stokColor ?> px-3 py-1.5 rounded-lg inline-block border shadow-sm text-sm">
+                                <?= esc($m['stok'] ?? 0) ?>
+                            </span>
+                        </td>
                         <td class="px-6 py-4 text-right">
-                            <div class="flex items-center justify-end gap-2 opacity-100 md:opacity-50 group-hover:opacity-100 transition-opacity">
+                            <div class="flex items-center justify-end gap-2">
                                 <a href="<?= base_url('admin/menu/edit/' . $m['id_menu']) ?>" class="bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white px-3 py-2 rounded-xl text-xs font-bold transition-colors shadow-sm flex items-center gap-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                     Edit
@@ -93,6 +101,47 @@
             </tbody>
         </table>
     </div>
+</div>
+
+<!-- Mobile Card View (< md) -->
+<div class="space-y-4 animate-fade-in-up md:hidden">
+    <?php if(empty($menu)): ?>
+        <div class="bg-white rounded-2xl p-10 text-center border border-gray-100 shadow-sm">
+            <div class="text-3xl mb-3">🍽️</div>
+            <p class="text-gray-400 font-bold text-sm">Belum ada data menu.</p>
+        </div>
+    <?php else: ?>
+        <?php foreach($menu as $m): ?>
+        <?php
+            $bgColor = 'bg-gray-100 text-gray-600';
+            if($m['kategori'] == 'makanan') $bgColor = 'bg-red-50 text-red-600 border border-red-100';
+            if($m['kategori'] == 'minuman') $bgColor = 'bg-blue-50 text-blue-600 border border-blue-100';
+            if($m['kategori'] == 'snack') $bgColor = 'bg-yellow-50 text-yellow-600 border border-yellow-100';
+        ?>
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex items-center gap-4">
+            <?php if(!empty($m['foto'])): ?>
+                <img src="<?= base_url('uploads/menu/' . $m['foto']) ?>" class="w-16 h-16 rounded-2xl object-cover shadow-sm flex-shrink-0">
+            <?php else: ?>
+                <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center text-[10px] font-bold text-gray-400 flex-shrink-0">No Img</div>
+            <?php endif; ?>
+            <div class="flex-1 min-w-0">
+                <p class="font-black text-gray-800 truncate"><?= esc($m['nama_item']) ?></p>
+                <div class="flex items-center gap-2 mt-1">
+                    <span class="<?= $bgColor ?> px-2 py-0.5 rounded-md text-[9px] font-black uppercase"><?= esc($m['kategori']) ?></span>
+                    <span class="text-orange-600 font-black text-sm">Rp <?= number_format($m['harga'], 0, ',', '.') ?></span>
+                </div>
+                <div class="mt-1">
+                    <?php $stokColorMobile = $m['stok'] <= 5 ? 'text-red-600' : 'text-green-600'; ?>
+                    <span class="text-xs font-bold <?= $stokColorMobile ?>">Stok: <?= esc($m['stok'] ?? 0) ?></span>
+                </div>
+            </div>
+            <div class="flex flex-col gap-2 flex-shrink-0">
+                <a href="<?= base_url('admin/menu/edit/' . $m['id_menu']) ?>" class="bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white px-3 py-2 rounded-xl text-xs font-bold transition-colors text-center">Edit</a>
+                <a href="<?= base_url('admin/menu/hapus/' . $m['id_menu']) ?>" onclick="return confirm('Hapus <?= esc($m['nama_item']) ?>?')" class="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white px-3 py-2 rounded-xl text-xs font-bold transition-colors text-center">Hapus</a>
+            </div>
+        </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
 </div>
 
 <style>

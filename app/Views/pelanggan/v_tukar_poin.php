@@ -14,7 +14,7 @@
     </div>
 </div>
 
-<div class="max-w-md mx-auto p-5 space-y-6 mt-2 animate-fade-in-up">
+<div class="max-w-2xl mx-auto p-5 space-y-6 mt-2 animate-fade-in-up">
 
     <?php if(session()->getFlashdata('error')): ?>
         <div class="bg-red-50 text-red-700 p-4 rounded-xl font-bold border border-red-200 text-sm">
@@ -46,7 +46,7 @@
                 <p class="text-xs text-gray-400 font-bold">Katalog reward sedang kosong.</p>
             </div>
         <?php else: ?>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <?php foreach($katalog as $r): ?>
                 <?php $isBisaTukar = $user['poin_loyalitas'] >= $r['poin_dibutuhkan']; ?>
                 

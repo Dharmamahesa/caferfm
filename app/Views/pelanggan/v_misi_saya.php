@@ -12,7 +12,7 @@
     </div>
 </div>
 
-<div class="max-w-md mx-auto p-5 mt-2 space-y-5 animate-fade-in-up">
+<div class="max-w-2xl mx-auto p-5 mt-2 space-y-5 animate-fade-in-up">
 
     <?php if(session()->getFlashdata('sukses')): ?>
         <div class="bg-green-50 text-green-700 p-4 rounded-2xl border border-green-200 shadow-sm flex items-center gap-3">

@@ -17,7 +17,7 @@
     </a>
 </div>
 
-<div class="max-w-md mx-auto p-5 space-y-6 mt-2 animate-fade-in-up">
+<div class="max-w-2xl mx-auto p-5 space-y-6 mt-2 animate-fade-in-up">
     
     <!-- Member Card -->
     <div class="bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-[2rem] p-7 text-white shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] relative overflow-hidden group">

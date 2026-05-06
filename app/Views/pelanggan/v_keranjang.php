@@ -12,7 +12,7 @@
     </div>
 </div>
 
-<div class="max-w-md mx-auto p-5 mt-2 animate-fade-in-up">
+<div class="max-w-2xl mx-auto p-5 mt-2 animate-fade-in-up">
     
     <div id="cart-items-container" class="space-y-4 mb-8">
         <!-- Item keranjang dirender oleh JavaScript -->
@@ -153,6 +153,13 @@
     }
 
     function updateQty(index, change) {
+        if (change > 0 && cart[index].stok_max !== undefined) {
+            if (cart[index].qty >= cart[index].stok_max) {
+                alert('Maaf, stok item ' + cart[index].nama + ' hanya tersisa ' + cart[index].stok_max + '.');
+                return;
+            }
+        }
+        
         cart[index].qty += change;
         
         if (cart[index].qty <= 0) {

@@ -100,6 +100,10 @@
                 <span class="text-lg">📱</span> Smart QR Meja
             </a>
 
+            <a href="<?= base_url('admin/map_meja') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all duration-300 <?= ($uri == 'map_meja') ? 'bg-white/10 text-white translate-x-1 border border-white/5' : 'text-gray-400 hover:bg-white/5 hover:text-white' ?>">
+                <span class="text-lg">🗺️</span> Visual Map Meja
+            </a>
+
             <a href="<?= base_url('admin/pengaturan') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all duration-300 <?= ($uri == 'pengaturan') ? 'bg-white/10 text-white translate-x-1 border border-white/5' : 'text-gray-400 hover:bg-white/5 hover:text-white' ?>">
                 <span class="text-lg">⚙️</span> Pengaturan
             </a>

@@ -2,13 +2,13 @@
 
 <?= $this->section('content') ?>
 
-<div class="mb-8 flex flex-col md:flex-row md:justify-between md:items-end gap-4 animate-fade-in-up">
+<div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 animate-fade-in-up">
     <div>
-        <h1 class="text-3xl font-black text-gray-800 tracking-tight flex items-center gap-3">
+        <h1 class="text-2xl md:text-3xl font-black text-gray-800 tracking-tight flex items-center gap-3">
             <span class="bg-orange-100 text-orange-600 p-2 rounded-xl shadow-inner">👨‍🍳</span> 
             Kitchen Display System
         </h1>
-        <p class="text-gray-500 font-medium mt-2">Daftar antrean pesanan yang harus segera dimasak.</p>
+        <p class="text-gray-500 font-medium mt-1 text-sm">Daftar antrean pesanan yang harus segera dimasak.</p>
     </div>
     
     <div class="flex items-center gap-3">
@@ -52,7 +52,7 @@
         <p class="text-gray-500 font-medium">Belum ada pesanan masuk. Halaman ini akan otomatis refresh setiap 30 detik.</p>
     </div>
 <?php else: ?>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         <?php foreach($pesanan as $p): ?>
             <div class="bg-white rounded-[2rem] shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-t-8 border-orange-500 overflow-hidden flex flex-col group animate-fade-in-up">
                 

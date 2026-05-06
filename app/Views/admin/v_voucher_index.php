@@ -2,17 +2,17 @@
 
 <?= $this->section('content') ?>
 
-<div class="mb-8 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 animate-fade-in-up">
+<div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 animate-fade-in-up">
     <div>
-        <h1 class="text-3xl font-black text-gray-800 tracking-tight flex items-center gap-3">
+        <h1 class="text-2xl md:text-3xl font-black text-gray-800 tracking-tight flex items-center gap-3">
             <span class="bg-orange-100 text-orange-600 p-2 rounded-xl shadow-inner">🎟️</span> 
             Manajemen Voucher Promo
         </h1>
-        <p class="text-gray-500 font-medium mt-2">Buat kode voucher diskon global untuk event atau promo khusus.</p>
+        <p class="text-gray-500 font-medium mt-1 text-sm">Buat kode voucher diskon global untuk event atau promo khusus.</p>
     </div>
-    <button onclick="document.getElementById('modal-voucher').classList.remove('hidden')" class="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3.5 rounded-xl font-bold shadow-lg shadow-orange-500/30 hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2">
+    <button id="btn-open-modal-voucher" class="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-5 py-3 rounded-xl font-bold shadow-lg shadow-orange-500/30 hover:shadow-xl hover:-translate-y-0.5 active:scale-95 transition-all flex items-center justify-center gap-2 self-start sm:self-auto">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" /></svg>
-        Buat Voucher Baru
+        Buat Voucher
     </button>
 </div>
 
@@ -27,14 +27,15 @@
     </div>
 <?php endif; ?>
 
-<div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden animate-fade-in-up">
+<!-- Desktop Table -->
+<div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden animate-fade-in-up hidden md:block">
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-gray-50 text-gray-400 text-xs uppercase font-black border-b border-gray-100">
                     <th class="px-6 py-4">Nama Voucher</th>
-                    <th class="px-6 py-4">Kode Voucher</th>
-                    <th class="px-6 py-4">Nilai Diskon</th>
+                    <th class="px-6 py-4">Kode</th>
+                    <th class="px-6 py-4">Diskon</th>
                     <th class="px-6 py-4">Kuota</th>
                     <th class="px-6 py-4">Status</th>
                     <th class="px-6 py-4 text-right">Aksi</th>
@@ -46,9 +47,9 @@
                 <?php else: ?>
                     <?php foreach($voucher as $v): ?>
                     <tr class="border-b border-gray-50 hover:bg-slate-50 transition-colors">
-                        <td class="px-6 py-4 font-black text-gray-800 text-base"><?= esc($v['nama_voucher']) ?></td>
+                        <td class="px-6 py-4 font-black text-gray-800"><?= esc($v['nama_voucher']) ?></td>
                         <td class="px-6 py-4">
-                            <code class="bg-orange-50 text-orange-600 font-black px-3 py-1.5 rounded-lg border border-orange-100 uppercase tracking-widest shadow-sm"><?= esc($v['kode_voucher']) ?></code>
+                            <code class="bg-orange-50 text-orange-600 font-black px-3 py-1.5 rounded-lg border border-orange-100 uppercase tracking-widest shadow-sm text-xs"><?= esc($v['kode_voucher']) ?></code>
                         </td>
                         <td class="px-6 py-4 font-bold text-gray-800">
                             <?= $v['tipe_diskon'] == 'nominal' ? 'Rp ' . number_format($v['diskon'], 0, ',', '.') : $v['diskon'] . '%' ?>
@@ -72,10 +73,49 @@
     </div>
 </div>
 
+<!-- Mobile Card View -->
+<div class="space-y-4 animate-fade-in-up md:hidden">
+    <?php if(empty($voucher)): ?>
+        <div class="bg-white rounded-2xl p-10 text-center border border-gray-100 shadow-sm">
+            <div class="text-3xl mb-3">🎟️</div>
+            <p class="text-gray-400 font-bold text-sm">Belum ada voucher promo.</p>
+        </div>
+    <?php else: ?>
+        <?php foreach($voucher as $v): ?>
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="p-4 border-b border-gray-50">
+                <div class="flex items-start justify-between gap-3 mb-3">
+                    <div>
+                        <p class="font-black text-gray-800"><?= esc($v['nama_voucher']) ?></p>
+                        <code class="bg-orange-50 text-orange-600 font-black px-2 py-1 rounded-lg border border-orange-100 uppercase tracking-widest shadow-sm text-xs mt-1 inline-block"><?= esc($v['kode_voucher']) ?></code>
+                    </div>
+                    <span class="<?= $v['status'] == 'aktif' ? 'bg-green-100 text-green-700 border-green-200' : 'bg-red-100 text-red-700 border-red-200' ?> px-3 py-1 rounded-full text-xs font-bold uppercase border shadow-sm flex-shrink-0">
+                        <?= esc($v['status']) ?>
+                    </span>
+                </div>
+            </div>
+            <div class="p-4 flex items-center justify-between bg-gray-50/50">
+                <div class="flex items-center gap-4">
+                    <div>
+                        <p class="text-[10px] font-black text-gray-400 uppercase">Diskon</p>
+                        <p class="font-black text-gray-800 text-sm"><?= $v['tipe_diskon'] == 'nominal' ? 'Rp ' . number_format($v['diskon'], 0, ',', '.') : $v['diskon'] . '%' ?></p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black text-gray-400 uppercase">Kuota</p>
+                        <p class="font-bold text-gray-800 text-sm"><?= $v['kuota'] == 0 ? 'Unlimited' : number_format($v['kuota'], 0, ',', '.') ?></p>
+                    </div>
+                </div>
+                <a href="<?= base_url('admin/voucher/hapus/' . $v['id_voucher']) ?>" onclick="return confirm('Hapus voucher promo ini?')" class="bg-red-50 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors">Hapus</a>
+            </div>
+        </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</div>
+
 <!-- Modal Tambah Voucher -->
-<div id="modal-voucher" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl p-6 relative animate-fade-in-up">
-        <button onclick="document.getElementById('modal-voucher').classList.add('hidden')" class="absolute right-6 top-6 text-gray-400 hover:text-gray-600 font-bold text-xl">&times;</button>
+<div id="modal-voucher" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4" style="display:none">
+    <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl p-6 relative animate-fade-in-up max-h-[90vh] overflow-y-auto">
+        <button id="btn-close-modal-voucher" class="absolute right-5 top-5 text-gray-400 hover:text-gray-600 font-bold text-xl w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100">&times;</button>
         
         <h2 class="text-2xl font-black text-gray-800 mb-6 flex items-center gap-2">
             <span class="text-orange-500">🎟️</span> Buat Voucher Promo
@@ -123,6 +163,16 @@
     .animate-fade-in-up {
         animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
+    #modal-voucher:not(.hidden) { display: flex !important; }
 </style>
+
+<script>
+    const btnOpen = document.getElementById('btn-open-modal-voucher');
+    const btnClose = document.getElementById('btn-close-modal-voucher');
+    const modal = document.getElementById('modal-voucher');
+    if(btnOpen) btnOpen.addEventListener('click', () => { modal.classList.remove('hidden'); modal.style.display = 'flex'; });
+    if(btnClose) btnClose.addEventListener('click', () => { modal.classList.add('hidden'); modal.style.display = 'none'; });
+    if(modal) modal.addEventListener('click', (e) => { if(e.target === modal) { modal.classList.add('hidden'); modal.style.display = 'none'; } });
+</script>
 
 <?= $this->endSection() ?>

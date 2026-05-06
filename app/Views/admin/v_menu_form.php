@@ -8,10 +8,10 @@
 ?>
 
 <div class="mb-6 flex items-center gap-3 animate-fade-in-up">
-    <a href="<?= base_url('admin/menu') ?>" class="w-10 h-10 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:text-orange-600 transition-colors shadow-sm">
+    <a href="<?= base_url('admin/menu') ?>" class="w-10 h-10 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:text-orange-600 transition-colors shadow-sm flex-shrink-0">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
     </a>
-    <h1 class="text-3xl font-black text-gray-800 tracking-tight">
+    <h1 class="text-2xl md:text-3xl font-black text-gray-800 tracking-tight">
         <?= $isEdit ? 'Edit Menu' : 'Tambah Menu Baru' ?>
     </h1>
 </div>
@@ -34,7 +34,7 @@
             <input type="text" name="nama_item" value="<?= $isEdit ? esc($menu['nama_item']) : '' ?>" placeholder="Contoh: Kopi Susu Aren" required class="w-full px-5 py-4 rounded-xl bg-gray-50/50 border border-gray-200 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 outline-none text-gray-800 font-bold transition-all shadow-sm">
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
                 <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Kategori</label>
                 <div class="relative">
@@ -55,6 +55,12 @@
                         Rp
                     </div>
                     <input type="number" name="harga" value="<?= $isEdit ? esc($menu['harga']) : '' ?>" placeholder="15000" required class="w-full pl-12 pr-5 py-4 rounded-xl bg-gray-50/50 border border-gray-200 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 outline-none text-gray-800 font-bold transition-all shadow-sm">
+                </div>
+            </div>
+            <div>
+                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Stok</label>
+                <div class="relative">
+                    <input type="number" name="stok" value="<?= $isEdit ? esc($menu['stok']) : '0' ?>" placeholder="0" required class="w-full px-5 py-4 rounded-xl bg-gray-50/50 border border-gray-200 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 outline-none text-gray-800 font-bold transition-all shadow-sm">
                 </div>
             </div>
         </div>

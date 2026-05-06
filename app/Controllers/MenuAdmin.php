@@ -48,6 +48,7 @@ class MenuAdmin extends BaseController
             'nama_item' => $this->request->getPost('nama_item'),
             'kategori'  => $this->request->getPost('kategori'),
             'harga'     => $this->request->getPost('harga'),
+            'stok'      => $this->request->getPost('stok'),
             'foto'      => $namaFoto
         ]);
 
@@ -86,6 +87,7 @@ class MenuAdmin extends BaseController
             'nama_item' => $this->request->getPost('nama_item'),
             'kategori'  => $this->request->getPost('kategori'),
             'harga'     => $this->request->getPost('harga'),
+            'stok'      => $this->request->getPost('stok'),
             'foto'      => $namaFoto
         ]);
 
