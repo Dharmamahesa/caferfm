@@ -51,24 +51,15 @@ class Checkout extends BaseController
             ->get()->getRowArray();
 
         if($voucherPribadi) {
-            $diskon = 0;
-            $tipe = 'nominal';
-            
-            if(stripos($voucherPribadi['nama_reward'], '50.000') !== false) {
-                $diskon = 50000;
-            } elseif(stripos($voucherPribadi['nama_reward'], '10%') !== false) {
-                $diskon = 10;
-                $tipe = 'persen';
-            } else {
-                $diskon = 15000;
-            }
+            $diskon = $voucherPribadi['nominal_diskon'];
+            $tipe = $voucherPribadi['tipe_diskon'];
 
             return $this->response->setJSON([
                 'status' => 'success', 
                 'message' => 'Voucher ' . $voucherPribadi['nama_reward'] . ' berhasil diterapkan!',
                 'diskon' => $diskon,
                 'tipe' => $tipe,
-                'id_voucher' => $voucherPribadi['id_voucher']
+                'id_pelanggan_voucher' => $voucherPribadi['id_voucher'] // Flag untuk membedakan
             ]);
         }
 

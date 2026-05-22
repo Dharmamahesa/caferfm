@@ -3,30 +3,30 @@
 <?= $this->section('content') ?>
 
 <!-- Header Section -->
-<div class="bg-gradient-to-br from-orange-500 via-orange-500 to-red-500 text-white p-6 rounded-b-[2rem] shadow-lg shadow-orange-500/20 sticky top-0 z-40">
+<div class="bg-[#58CC02] text-white p-6 rounded-b-[2rem] shadow-[0_4px_0_#4BB200] sticky top-0 z-40">
     <div class="flex justify-between items-center mb-5">
         <div>
-            <h1 class="text-3xl font-black tracking-tight drop-shadow-sm">Kafe</h1>
+            <h1 class="text-3xl font-extrabold tracking-tight drop-shadow-sm">Kafe</h1>
             <?php if(session()->get('isLoggedIn')): ?>
-                <p class="text-orange-50 text-sm mt-1 font-medium opacity-90">Hai, <?= esc(session()->get('nama_pelanggan')) ?>! 👋</p>
+                <p class="text-white/80 text-sm mt-1 font-medium opacity-90">Hai, <?= esc(session()->get('nama_pelanggan')) ?>! 👋</p>
             <?php else: ?>
-                <p class="text-orange-50 text-sm mt-1 font-medium opacity-90">Selamat datang, Sahabat!</p>
+                <p class="text-white/80 text-sm mt-1 font-medium opacity-90">Selamat datang, Sahabat!</p>
             <?php endif; ?>
         </div>
         
         <div class="bg-white/20 backdrop-blur-md border border-white/30 text-white px-5 py-2.5 rounded-2xl text-center shadow-sm relative overflow-hidden group">
             <div class="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
             <p class="text-[10px] font-bold uppercase tracking-widest opacity-80 mb-0.5 relative z-10">Meja</p>
-            <p class="text-2xl font-black leading-none drop-shadow-md relative z-10" id="display_meja"><?= esc($no_meja) ?></p>
+            <p class="text-2xl font-extrabold leading-none drop-shadow-md relative z-10" id="display_meja"><?= esc($no_meja) ?></p>
         </div>
     </div>
 
     <!-- Search Bar -->
     <div class="relative mb-5">
-        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-orange-200">
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/60">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
         </div>
-        <input type="text" id="searchInput" onkeyup="searchMenu()" placeholder="Cari makanan atau minuman..." class="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 text-white placeholder-orange-100 focus:bg-white focus:text-gray-800 focus:placeholder-gray-400 outline-none transition-all font-semibold shadow-inner">
+        <input type="text" id="searchInput" onkeyup="searchMenu()" placeholder="Cari makanan atau minuman..." class="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 text-white placeholder-white/60 focus:bg-white focus:text-[#4B4B4B] focus:placeholder-gray-400 outline-none transition-all font-semibold shadow-inner">
     </div>
 
     <div class="flex">
@@ -35,7 +35,7 @@
                 <span class="text-lg">⭐</span> Profil & Poin
             </a>
         <?php else: ?>
-            <a href="<?= base_url('auth/login') ?>" class="w-full bg-white text-orange-600 hover:bg-orange-50 text-center py-3 rounded-2xl text-sm font-bold transition-all duration-300 shadow-lg shadow-black/5 flex items-center justify-center gap-2">
+            <a href="<?= base_url('auth/login') ?>" class="w-full bg-white text-[#58CC02] hover:bg-[#58CC02]/10 text-center py-3 rounded-2xl text-sm font-bold transition-all duration-300 shadow-none shadow-black/5 flex items-center justify-center gap-2">
                 <span class="text-lg">🎁</span> Masuk / Daftar
             </a>
         <?php endif; ?>
@@ -45,9 +45,9 @@
 <!-- Filter Categories -->
 <div class="flex gap-3 p-5 mt-2 overflow-x-auto no-scrollbar snap-x">
     <button onclick="filterMenu('semua', this)" class="filter-btn active-filter snap-center bg-gradient-to-r from-gray-800 to-gray-900 text-white px-6 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all duration-300 shadow-md transform scale-105">Semua</button>
-    <button onclick="filterMenu('makanan', this)" class="filter-btn snap-center bg-white text-gray-600 px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-300 shadow-sm border border-gray-100 hover:bg-gray-50 hover:shadow-md">Makanan</button>
-    <button onclick="filterMenu('minuman', this)" class="filter-btn snap-center bg-white text-gray-600 px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-300 shadow-sm border border-gray-100 hover:bg-gray-50 hover:shadow-md">Minuman</button>
-    <button onclick="filterMenu('snack', this)" class="filter-btn snap-center bg-white text-gray-600 px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-300 shadow-sm border border-gray-100 hover:bg-gray-50 hover:shadow-md">Snack</button>
+    <button onclick="filterMenu('makanan', this)" class="filter-btn snap-center bg-white text-gray-600 px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-300 shadow-sm border border-[#E5E5E5] hover:bg-[#f7f7f7] hover:shadow-md">Makanan</button>
+    <button onclick="filterMenu('minuman', this)" class="filter-btn snap-center bg-white text-gray-600 px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-300 shadow-sm border border-[#E5E5E5] hover:bg-[#f7f7f7] hover:shadow-md">Minuman</button>
+    <button onclick="filterMenu('snack', this)" class="filter-btn snap-center bg-white text-gray-600 px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-300 shadow-sm border border-[#E5E5E5] hover:bg-[#f7f7f7] hover:shadow-md">Snack</button>
 </div>
 
 <!-- Menu Grid -->
@@ -56,17 +56,17 @@
     $semua_menu = array_merge($makanan ?? [], $minuman ?? [], $snack ?? []);
     
     if(empty($semua_menu)): ?>
-        <div class="col-span-2 md:col-span-3 lg:col-span-4 flex flex-col items-center justify-center py-16 text-gray-400">
-            <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4 shadow-inner">
+        <div class="col-span-2 md:col-span-3 lg:col-span-4 flex flex-col items-center justify-center py-16 text-[#AFAFAF]">
+            <div class="w-20 h-20 bg-[#f7f7f7] rounded-full flex items-center justify-center mb-4 shadow-inner">
                 <span class="text-3xl">🍽️</span>
             </div>
-            <p class="font-medium text-gray-500">Menu belum tersedia.</p>
+            <p class="font-medium text-[#777]">Menu belum tersedia.</p>
         </div>
     <?php else: ?>
         <?php foreach($semua_menu as $item): ?>
-            <div class="menu-card bg-white rounded-[1.5rem] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 p-3.5 flex flex-col group" data-kategori="<?= esc($item['kategori']) ?>" data-nama="<?= strtolower(esc($item['nama_item'])) ?>">
+            <div class="menu-card bg-white rounded-[1.5rem] shadow-sm hover:shadow-none hover:-translate-y-1 transition-all duration-300 border border-[#E5E5E5] p-3.5 flex flex-col group" data-kategori="<?= esc($item['kategori']) ?>" data-nama="<?= strtolower(esc($item['nama_item'])) ?>">
                 
-                <div class="w-full h-36 bg-slate-100 rounded-2xl mb-4 flex items-center justify-center text-gray-400 text-xs overflow-hidden relative shadow-inner">
+                <div class="w-full h-36 bg-[#f7f7f7] rounded-2xl mb-4 flex items-center justify-center text-[#AFAFAF] text-xs overflow-hidden relative shadow-inner">
                     <?php if(!empty($item['foto'])): ?>
                         <img src="<?= base_url('uploads/menu/' . $item['foto']) ?>" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out" alt="<?= esc($item['nama_item']) ?>">
                     <?php else: ?>
@@ -77,24 +77,24 @@
                 </div>
                 
                 <div class="flex-grow px-1">
-                    <h3 class="font-bold text-gray-800 leading-tight mb-1.5 line-clamp-2"><?= esc($item['nama_item']) ?></h3>
+                    <h3 class="font-bold text-[#4B4B4B] leading-tight mb-1.5 line-clamp-2"><?= esc($item['nama_item']) ?></h3>
                     <div class="flex items-center justify-between">
-                        <p class="text-orange-600 font-black text-lg tracking-tight">Rp <?= number_format($item['harga'], 0, ',', '.') ?></p>
+                        <p class="text-[#58CC02] font-extrabold text-lg tracking-tight">Rp <?= number_format($item['harga'], 0, ',', '.') ?></p>
                         <?php if($item['stok'] <= 5 && $item['stok'] > 0): ?>
-                            <span class="text-[9px] font-black text-red-500 bg-red-50 px-2 py-0.5 rounded-md uppercase tracking-wider">Sisa <?= esc($item['stok']) ?></span>
+                            <span class="text-[9px] font-extrabold text-[#FF4B4B] bg-red-50 px-2 py-0.5 rounded-md uppercase tracking-wider">Sisa <?= esc($item['stok']) ?></span>
                         <?php elseif($item['stok'] > 5): ?>
-                            <span class="text-[9px] font-black text-green-500 bg-green-50 px-2 py-0.5 rounded-md uppercase tracking-wider">Tersedia</span>
+                            <span class="text-[9px] font-extrabold text-green-500 bg-green-50 px-2 py-0.5 rounded-md uppercase tracking-wider">Tersedia</span>
                         <?php endif; ?>
                     </div>
                 </div>
 
                 <?php if($item['stok'] > 0): ?>
-                    <button onclick="addToCart(<?= $item['id_menu'] ?>, '<?= addslashes($item['nama_item']) ?>', <?= $item['harga'] ?>, <?= $item['stok'] ?>)" class="mt-4 w-full bg-orange-50 text-orange-600 py-2.5 rounded-xl font-bold text-sm hover:bg-orange-500 hover:text-white transition-all duration-300 active:scale-95 hover:shadow-md hover:shadow-orange-500/20 flex justify-center items-center gap-1.5 group/btn">
+                    <button onclick="addToCart(<?= $item['id_menu'] ?>, '<?= addslashes($item['nama_item']) ?>', <?= $item['harga'] ?>, <?= $item['stok'] ?>)" class="mt-4 w-full bg-[#58CC02]/10 text-[#58CC02] py-2.5 rounded-xl font-bold text-sm hover:bg-[#58CC02] hover:text-white transition-all duration-300 active:scale-95 hover:shadow-md hover:shadow-[#58CC02]/20 flex justify-center items-center gap-1.5 group/btn">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover/btn:rotate-90 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" /></svg>
                         Tambah
                     </button>
                 <?php else: ?>
-                    <button disabled class="mt-4 w-full bg-gray-100 text-gray-400 py-2.5 rounded-xl font-bold text-sm cursor-not-allowed flex justify-center items-center gap-1.5 border border-gray-200">
+                    <button disabled class="mt-4 w-full bg-[#f7f7f7] text-[#AFAFAF] py-2.5 rounded-xl font-bold text-sm cursor-not-allowed flex justify-center items-center gap-1.5 border border-[#E5E5E5]">
                         Habis
                     </button>
                 <?php endif; ?>
@@ -103,27 +103,27 @@
     <?php endif; ?>
 </div>
 
-<div id="no-results" class="hidden px-5 py-10 flex-col items-center justify-center text-gray-400">
-    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4 shadow-inner">
+<div id="no-results" class="hidden px-5 py-10 flex-col items-center justify-center text-[#AFAFAF]">
+    <div class="w-20 h-20 bg-[#f7f7f7] rounded-full flex items-center justify-center mb-4 shadow-inner">
         <span class="text-3xl">🔍</span>
     </div>
-    <p class="font-bold text-gray-500">Menu tidak ditemukan.</p>
+    <p class="font-bold text-[#777]">Menu tidak ditemukan.</p>
 </div>
 
 <!-- Floating Cart -->
-<div id="floating-cart" class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-gray-100 p-5 shadow-[0_-10px_25px_-5px_rgba(0,0,0,0.08)] transform translate-y-full transition-transform duration-500 z-50 rounded-t-[2rem]">
+<div id="floating-cart" class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-[#E5E5E5] p-5 shadow-[0_-10px_25px_-5px_rgba(0,0,0,0.08)] transform translate-y-full transition-transform duration-500 z-50 rounded-t-[2rem]">
     <div class="max-w-2xl mx-auto flex justify-between items-center">
         <div class="flex items-center gap-4">
-            <div class="bg-orange-100 text-orange-600 w-12 h-12 rounded-2xl flex items-center justify-center relative shadow-inner">
+            <div class="bg-[#58CC02]/10 text-[#58CC02] w-12 h-12 rounded-2xl flex items-center justify-center relative shadow-inner">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
-                <span id="cart-count-badge" class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm">0</span>
+                <span id="cart-count-badge" class="absolute -top-1.5 -right-1.5 bg-[#FF4B4B] text-white text-[10px] font-extrabold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm">0</span>
             </div>
             <div>
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Total Harga</p>
-                <p class="text-xl font-black text-gray-800 leading-none" id="cart-total">Rp 0</p>
+                <p class="text-xs font-semibold text-[#AFAFAF] uppercase tracking-wider mb-0.5">Total Harga</p>
+                <p class="text-xl font-extrabold text-[#4B4B4B] leading-none" id="cart-total">Rp 0</p>
             </div>
         </div>
-        <button onclick="goToCart()" class="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-7 py-3.5 rounded-2xl font-bold shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 active:scale-95 transition-all flex items-center gap-2 group">
+        <button onclick="goToCart()" class="bg-gradient-to-r from-[#58CC02] to-[#4BB200] text-white px-7 py-3.5 rounded-2xl font-bold shadow-none shadow-[#58CC02]/25 hover:shadow-none hover:shadow-[#58CC02]/30 active:scale-95 transition-all flex items-center gap-2 group">
             Checkout
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
         </button>
@@ -158,7 +158,7 @@
     function filterMenu(kategori, btnElement) {
         currentCategory = kategori;
         const activeClasses = ['bg-gradient-to-r', 'from-gray-800', 'to-gray-900', 'text-white', 'shadow-md', 'transform', 'scale-105'];
-        const inactiveClasses = ['bg-white', 'text-gray-600', 'shadow-sm', 'border', 'border-gray-100', 'hover:bg-gray-50', 'hover:shadow-md'];
+        const inactiveClasses = ['bg-white', 'text-gray-600', 'shadow-sm', 'border', 'border-[#E5E5E5]', 'hover:bg-[#f7f7f7]', 'hover:shadow-md'];
 
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.classList.remove(...activeClasses);

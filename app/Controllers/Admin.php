@@ -137,6 +137,8 @@ class Admin extends BaseController
     {
         $segment = $this->request->getPost('segment');
         $namaVoucher = $this->request->getPost('nama_voucher');
+        $tipeDiskon = $this->request->getPost('tipe_diskon');
+        $nominalDiskon = $this->request->getPost('nominal_diskon');
         $kodeVoucher = strtoupper(substr(md5(uniqid()), 0, 8)); // Generate random code
 
         // Dapatkan semua pelanggan
@@ -150,11 +152,12 @@ class Admin extends BaseController
             if($p['segment'] == $segment) {
                 // Beri voucher pribadi
                 $db->table('pelanggan_voucher')->insert([
-                    'id_pelanggan' => $p['id_pelanggan'],
-                    'nama_reward'  => $namaVoucher,
-                    'kode_voucher' => $kodeVoucher . $p['id_pelanggan'],
-                    'status'       => 'aktif',
-                    'tgl_klaim'    => date('Y-m-d H:i:s')
+                    'id_pelanggan'   => $p['id_pelanggan'],
+                    'nama_reward'    => $namaVoucher,
+                    'kode_voucher'   => $kodeVoucher . $p['id_pelanggan'],
+                    'tipe_diskon'    => $tipeDiskon,
+                    'nominal_diskon' => $nominalDiskon,
+                    'status'         => 'aktif'
                 ]);
                 $count++;
             }

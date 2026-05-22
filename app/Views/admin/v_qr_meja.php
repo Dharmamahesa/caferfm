@@ -4,13 +4,13 @@
 
 <div class="mb-8 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 animate-fade-in-up">
     <div>
-        <h1 class="text-3xl font-black text-gray-800 tracking-tight flex items-center gap-3">
+        <h1 class="text-3xl font-extrabold text-[#4B4B4B] tracking-tight flex items-center gap-3">
             <span class="bg-blue-100 text-blue-600 p-2 rounded-xl shadow-inner">📱</span> 
             Smart Ordering QR
         </h1>
-        <p class="text-gray-500 font-medium mt-2">Cetak QR Code ini dan letakkan di masing-masing meja kafe Anda.</p>
+        <p class="text-[#777] font-medium mt-2">Cetak QR Code ini dan letakkan di masing-masing meja kafe Anda.</p>
     </div>
-    <button onclick="window.print()" class="bg-white border border-gray-200 text-gray-700 px-6 py-3.5 rounded-xl shadow-sm hover:bg-gray-50 active:scale-95 transition-all flex items-center justify-center gap-3 font-bold no-print">
+    <button onclick="window.print()" class="bg-white border border-[#E5E5E5] text-gray-700 px-6 py-3.5 rounded-xl shadow-sm hover:bg-[#f7f7f7] active:scale-95 transition-all flex items-center justify-center gap-3 font-bold no-print">
         🖨️ Cetak Semua QR
     </button>
 </div>
@@ -29,21 +29,21 @@
         $qr_api_url = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" . urlencode($url_pesan);
     ?>
     
-    <div class="bg-white rounded-[2rem] p-6 shadow-sm border border-gray-100 flex flex-col items-center text-center relative break-inside-avoid">
+    <div class="bg-white rounded-2xl p-6 shadow-sm border border-[#E5E5E5] flex flex-col items-center text-center relative break-inside-avoid">
         <!-- Deco -->
-        <div class="absolute -top-3 -right-3 w-10 h-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center font-black border-4 border-slate-50 shadow-sm z-10">
+        <div class="absolute -top-3 -right-3 w-10 h-10 bg-[#58CC02]/10 text-[#58CC02] rounded-full flex items-center justify-center font-extrabold border-4 border-slate-50 shadow-sm z-10">
             <?= $i ?>
         </div>
         
-        <h2 class="text-xl font-black text-gray-800 mb-1">Meja <?= $i ?></h2>
-        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-6">Scan untuk Memesan</p>
+        <h2 class="text-xl font-extrabold text-[#4B4B4B] mb-1">Meja <?= $i ?></h2>
+        <p class="text-[10px] font-bold text-[#AFAFAF] uppercase tracking-widest mb-6">Scan untuk Memesan</p>
         
-        <div class="w-full aspect-square bg-gray-50 rounded-2xl p-4 border-2 border-dashed border-gray-200 mb-6 flex items-center justify-center">
+        <div class="w-full aspect-square bg-[#f7f7f7] rounded-2xl p-4 border-2 border-dashed border-[#E5E5E5] mb-6 flex items-center justify-center">
             <img src="<?= $qr_api_url ?>" alt="QR Meja <?= $i ?>" class="w-full h-full object-contain rounded-lg mix-blend-multiply">
         </div>
         
-        <div class="bg-gray-100 px-4 py-2 rounded-xl w-full">
-            <p class="text-xs font-mono text-gray-500 truncate" title="<?= $url_pesan ?>">
+        <div class="bg-[#f7f7f7] px-4 py-2 rounded-xl w-full">
+            <p class="text-xs font-mono text-[#777] truncate" title="<?= $url_pesan ?>">
                 <?= $url_pesan ?>
             </p>
         </div>

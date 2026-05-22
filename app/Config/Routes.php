@@ -34,6 +34,9 @@ $routes->get('misi_saya', 'Pelanggan::misi_saya', ['filter' => 'authGuard']);
 $routes->post('klaim_misi/(:num)', 'Pelanggan::klaim_misi/$1', ['filter' => 'authGuard']);
 $routes->get('tukar_poin', 'Pelanggan::tukar_poin', ['filter' => 'authGuard']);
 $routes->post('tukar_poin/proses', 'Pelanggan::proses_tukar_poin', ['filter' => 'authGuard']);
+$routes->get('lucky_spin', 'Pelanggan::lucky_spin', ['filter' => 'authGuard']);
+$routes->post('lucky_spin/beli', 'Pelanggan::beli_spin', ['filter' => 'authGuard']);
+$routes->post('lucky_spin/proses', 'Pelanggan::proses_spin', ['filter' => 'authGuard']);
 
 
 // ==============================================================================

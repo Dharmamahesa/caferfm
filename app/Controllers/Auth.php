@@ -68,6 +68,30 @@ class Auth extends BaseController
             // 2. Cocokkan password yang diketik dengan password hash di database
             if (password_verify($pass, $user['password'])) {
                 
+                // Daily Streak Logic
+                $today = date('Y-m-d');
+                $yesterday = date('Y-m-d', strtotime('-1 day'));
+                $lastLogin = $user['last_login_date'];
+                
+                $streakCount = $user['streak_count'];
+                $spinChances = $user['spin_chances'];
+                
+                if ($lastLogin !== $today) {
+                    if ($lastLogin === $yesterday) {
+                        $streakCount++;
+                    } else {
+                        $streakCount = 1;
+                    }
+                    $spinChances++; // Free daily spin
+                    
+                    // Update DB
+                    $pelangganModel->update($user['id_pelanggan'], [
+                        'last_login_date' => $today,
+                        'streak_count'    => $streakCount,
+                        'spin_chances'    => $spinChances
+                    ]);
+                }
+
                 // 3. Jika cocok, buat identitas Session
                 $sessionData = [
                     'id_pelanggan'   => $user['id_pelanggan'],
@@ -75,6 +99,10 @@ class Auth extends BaseController
                     'isLoggedIn'     => true
                 ];
                 session()->set($sessionData);
+
+                if ($lastLogin !== $today) {
+                    session()->setFlashdata('streak_msg', "Daily Login! Streak ke-$streakCount. Anda mendapat 1 Token Gacha Gratis!");
+                }
 
                 // Arahkan ke halaman utama (Katalog Menu)
                 return redirect()->to(base_url('/'));

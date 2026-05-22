@@ -191,15 +191,118 @@ class Pelanggan extends BaseController
             
             // Simpan Voucher ke profil
             $db->table('pelanggan_voucher')->insert([
-                'id_pelanggan' => $idPelanggan,
-                'nama_reward'  => $reward['nama_reward'],
-                'kode_voucher' => $kodeVoucher,
-                'status'       => 'aktif'
+                'id_pelanggan'   => $idPelanggan,
+                'nama_reward'    => $reward['nama_reward'],
+                'kode_voucher'   => $kodeVoucher,
+                'tipe_diskon'    => $reward['tipe_diskon'],
+                'nominal_diskon' => $reward['nominal_diskon'],
+                'status'         => 'aktif'
             ]);
 
             return redirect()->to(base_url('profil'))->with('sukses', "Berhasil menukar poin! Reward {$reward['nama_reward']} telah ditambahkan ke Voucher Saya.");
         }
         
         return redirect()->to(base_url('tukar_poin'))->with('error', 'Poin tidak mencukupi untuk reward ini.');
+    }
+
+    // ==========================================================
+    // 5. SISTEM GACHA (LUCKY SPIN)
+    // ==========================================================
+    public function lucky_spin()
+    {
+        $idPelanggan = session()->get('id_pelanggan');
+        $pelangganModel = new PelangganModel();
+        
+        $user = $pelangganModel->find($idPelanggan);
+        
+        $data = [
+            'title' => 'Lucky Spin - Kafe Gamified',
+            'user'  => $user
+        ];
+
+        return view('pelanggan/v_lucky_spin', $data);
+    }
+
+    public function beli_spin()
+    {
+        $idPelanggan = session()->get('id_pelanggan');
+        $pelangganModel = new PelangganModel();
+        $user = $pelangganModel->find($idPelanggan);
+
+        // 1 chance = 50 points
+        if ($user['poin_loyalitas'] >= 50) {
+            $pelangganModel->update($idPelanggan, [
+                'poin_loyalitas' => $user['poin_loyalitas'] - 50,
+                'spin_chances'   => $user['spin_chances'] + 1
+            ]);
+            return $this->response->setJSON(['status' => 'success', 'message' => 'Berhasil membeli 1 tiket Spin!']);
+        }
+
+        return $this->response->setJSON(['status' => 'error', 'message' => 'Poin tidak cukup! Minimal 50 poin.']);
+    }
+
+    public function proses_spin()
+    {
+        $idPelanggan = session()->get('id_pelanggan');
+        $pelangganModel = new PelangganModel();
+        $user = $pelangganModel->find($idPelanggan);
+
+        if ($user['spin_chances'] <= 0) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Anda tidak memiliki tiket Spin!']);
+        }
+
+        // Deduct 1 chance
+        $pelangganModel->update($idPelanggan, [
+            'spin_chances' => $user['spin_chances'] - 1
+        ]);
+
+        // Daftar Hadiah (Probabilitas bisa diatur di sini)
+        $prizes = [
+            ['id' => 1, 'nama' => 'FREE AREN LATTE', 'tipe' => 'voucher', 'nominal' => 0, 'weight' => 5],
+            ['id' => 2, 'nama' => 'DISC 6K', 'tipe' => 'voucher', 'nominal' => 6000, 'weight' => 15],
+            ['id' => 3, 'nama' => '100 POINTS', 'tipe' => 'poin', 'nominal' => 100, 'weight' => 10],
+            ['id' => 4, 'nama' => '50 POINTS', 'tipe' => 'poin', 'nominal' => 50, 'weight' => 20],
+            ['id' => 5, 'nama' => '30 POINTS', 'tipe' => 'poin', 'nominal' => 30, 'weight' => 30],
+            ['id' => 6, 'nama' => 'THANKS', 'tipe' => 'zonk', 'nominal' => 0, 'weight' => 20],
+        ];
+
+        // Weighted random selection
+        $totalWeight = array_sum(array_column($prizes, 'weight'));
+        $rand = mt_rand(1, $totalWeight);
+        
+        $selectedPrize = null;
+        $currentWeight = 0;
+        foreach ($prizes as $prize) {
+            $currentWeight += $prize['weight'];
+            if ($rand <= $currentWeight) {
+                $selectedPrize = $prize;
+                break;
+            }
+        }
+
+        // Berikan hadiah
+        if ($selectedPrize['tipe'] == 'poin') {
+            $pelangganModel->update($idPelanggan, [
+                'poin_loyalitas' => $user['poin_loyalitas'] + $selectedPrize['nominal']
+            ]);
+        } elseif ($selectedPrize['tipe'] == 'voucher') {
+            $db = \Config\Database::connect();
+            $kodeVoucher = 'SPIN-' . strtoupper(substr(md5(uniqid()), 0, 5));
+            $db->table('pelanggan_voucher')->insert([
+                'id_pelanggan'   => $idPelanggan,
+                'nama_reward'    => $selectedPrize['nama'],
+                'kode_voucher'   => $kodeVoucher,
+                'tipe_diskon'    => $selectedPrize['nominal'] > 0 ? 'nominal' : 'produk',
+                'nominal_diskon' => $selectedPrize['nominal'],
+                'status'         => 'aktif'
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'prize_id' => $selectedPrize['id'],
+            'prize_name' => $selectedPrize['nama'],
+            'prize_type' => $selectedPrize['tipe']
+        ]);
     }
 }

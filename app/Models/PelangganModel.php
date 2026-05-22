@@ -8,7 +8,7 @@ class PelangganModel extends Model
 {
     protected $table      = 'pelanggan';
     protected $primaryKey = 'id_pelanggan';
-    protected $allowedFields = ['nama_pelanggan', 'username', 'password', 'poin_loyalitas'];
+    protected $allowedFields = ['nama_pelanggan', 'username', 'email', 'no_telp', 'password', 'poin_loyalitas', 'spin_chances', 'streak_count', 'last_login_date'];
 
     // Fungsi untuk mencari pelanggan di halaman Kasir/Admin
     public function cariPelanggan($keyword = null)

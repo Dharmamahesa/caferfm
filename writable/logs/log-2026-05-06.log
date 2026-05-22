@@ -45,3 +45,240 @@ DEBUG - 2026-05-06 08:31:29 --> Session: Class initialized using 'CodeIgniter\Se
 DEBUG - 2026-05-06 08:31:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
 DEBUG - 2026-05-06 08:31:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
 DEBUG - 2026-05-06 08:31:50 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 08:41:12 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 08:41:18 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 08:41:50 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 08:41:50 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 10:46:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 10:46:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 10:46:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 10:46:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 10:46:51 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 10:47:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 10:47:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2026-05-06 10:47:17 --> Unknown column 'tgl_klaim' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 300.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(300): mysqli->query('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'DB03E2242\', \'aktif\', \'2026-05-06 10:47:17\')', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(910): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'DB03E2242\', \'aktif\', \'2026-05-06 10:47:17\')')
+ 3 SYSTEMPATH\Database\BaseConnection.php(827): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'DB03E2242\', \'aktif\', \'2026-05-06 10:47:17\')')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `status`, `tgl_klaim`) VALUES (:id_pelanggan:, :nama_reward:, :kode_voucher:, :status:, :tgl_klaim:)', [...], false)
+ 5 APPPATH\Controllers\Admin.php(152): CodeIgniter\Database\BaseBuilder->insert([...])
+ 6 SYSTEMPATH\CodeIgniter.php(951): App\Controllers\Admin->broadcast_rfm()
+ 7 SYSTEMPATH\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin))
+ 8 SYSTEMPATH\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-06 10:47:17 --> CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'tgl_klaim' in 'field list'
+[Method: POST, Route: admin/rfm/broadcast]
+in SYSTEMPATH\Database\BaseConnection.php on line 865.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `status`, `tgl_klaim`) VALUES (:id_pelanggan:, :nama_reward:, :kode_voucher:, :status:, :tgl_klaim:)', [...], false)
+ 2 APPPATH\Controllers\Admin.php(152): CodeIgniter\Database\BaseBuilder->insert([...])
+ 3 SYSTEMPATH\CodeIgniter.php(951): App\Controllers\Admin->broadcast_rfm()
+ 4 SYSTEMPATH\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin))
+ 5 SYSTEMPATH\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-06 10:47:17 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'tgl_klaim' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 310.
+ 1 SYSTEMPATH\Database\BaseConnection.php(910): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'DB03E2242\', \'aktif\', \'2026-05-06 10:47:17\')')
+ 2 SYSTEMPATH\Database\BaseConnection.php(827): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'DB03E2242\', \'aktif\', \'2026-05-06 10:47:17\')')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `status`, `tgl_klaim`) VALUES (:id_pelanggan:, :nama_reward:, :kode_voucher:, :status:, :tgl_klaim:)', [...], false)
+ 4 APPPATH\Controllers\Admin.php(152): CodeIgniter\Database\BaseBuilder->insert([...])
+ 5 SYSTEMPATH\CodeIgniter.php(951): App\Controllers\Admin->broadcast_rfm()
+ 6 SYSTEMPATH\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin))
+ 7 SYSTEMPATH\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-06 10:47:17 --> [Caused by] mysqli_sql_exception: Unknown column 'tgl_klaim' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 300.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(300): mysqli->query('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'DB03E2242\', \'aktif\', \'2026-05-06 10:47:17\')', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(910): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'DB03E2242\', \'aktif\', \'2026-05-06 10:47:17\')')
+ 3 SYSTEMPATH\Database\BaseConnection.php(827): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'DB03E2242\', \'aktif\', \'2026-05-06 10:47:17\')')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `status`, `tgl_klaim`) VALUES (:id_pelanggan:, :nama_reward:, :kode_voucher:, :status:, :tgl_klaim:)', [...], false)
+ 5 APPPATH\Controllers\Admin.php(152): CodeIgniter\Database\BaseBuilder->insert([...])
+ 6 SYSTEMPATH\CodeIgniter.php(951): App\Controllers\Admin->broadcast_rfm()
+ 7 SYSTEMPATH\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin))
+ 8 SYSTEMPATH\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-05-06 11:01:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2026-05-06 11:01:29 --> Unknown column 'tgl_klaim' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 300.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(300): mysqli->query('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'739CD7872\', NULL, NULL, \'aktif\', \'2026-05-06 11:01:29\')', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(910): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'739CD7872\', NULL, NULL, \'aktif\', \'2026-05-06 11:01:29\')')
+ 3 SYSTEMPATH\Database\BaseConnection.php(827): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'739CD7872\', NULL, NULL, \'aktif\', \'2026-05-06 11:01:29\')')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (:id_pelanggan:, :nama_reward:, :kode_voucher:, :tipe_diskon:, :nominal_diskon:, :status:, :tgl_klaim:)', [...], false)
+ 5 APPPATH\Controllers\Admin.php(154): CodeIgniter\Database\BaseBuilder->insert([...])
+ 6 SYSTEMPATH\CodeIgniter.php(951): App\Controllers\Admin->broadcast_rfm()
+ 7 SYSTEMPATH\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin))
+ 8 SYSTEMPATH\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-06 11:01:29 --> CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'tgl_klaim' in 'field list'
+[Method: POST, Route: admin/rfm/broadcast]
+in SYSTEMPATH\Database\BaseConnection.php on line 865.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (:id_pelanggan:, :nama_reward:, :kode_voucher:, :tipe_diskon:, :nominal_diskon:, :status:, :tgl_klaim:)', [...], false)
+ 2 APPPATH\Controllers\Admin.php(154): CodeIgniter\Database\BaseBuilder->insert([...])
+ 3 SYSTEMPATH\CodeIgniter.php(951): App\Controllers\Admin->broadcast_rfm()
+ 4 SYSTEMPATH\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin))
+ 5 SYSTEMPATH\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-06 11:01:29 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'tgl_klaim' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 310.
+ 1 SYSTEMPATH\Database\BaseConnection.php(910): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'739CD7872\', NULL, NULL, \'aktif\', \'2026-05-06 11:01:29\')')
+ 2 SYSTEMPATH\Database\BaseConnection.php(827): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'739CD7872\', NULL, NULL, \'aktif\', \'2026-05-06 11:01:29\')')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (:id_pelanggan:, :nama_reward:, :kode_voucher:, :tipe_diskon:, :nominal_diskon:, :status:, :tgl_klaim:)', [...], false)
+ 4 APPPATH\Controllers\Admin.php(154): CodeIgniter\Database\BaseBuilder->insert([...])
+ 5 SYSTEMPATH\CodeIgniter.php(951): App\Controllers\Admin->broadcast_rfm()
+ 6 SYSTEMPATH\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin))
+ 7 SYSTEMPATH\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-06 11:01:29 --> [Caused by] mysqli_sql_exception: Unknown column 'tgl_klaim' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 300.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(300): mysqli->query('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'739CD7872\', NULL, NULL, \'aktif\', \'2026-05-06 11:01:29\')', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(910): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'739CD7872\', NULL, NULL, \'aktif\', \'2026-05-06 11:01:29\')')
+ 3 SYSTEMPATH\Database\BaseConnection.php(827): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'739CD7872\', NULL, NULL, \'aktif\', \'2026-05-06 11:01:29\')')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (:id_pelanggan:, :nama_reward:, :kode_voucher:, :tipe_diskon:, :nominal_diskon:, :status:, :tgl_klaim:)', [...], false)
+ 5 APPPATH\Controllers\Admin.php(154): CodeIgniter\Database\BaseBuilder->insert([...])
+ 6 SYSTEMPATH\CodeIgniter.php(951): App\Controllers\Admin->broadcast_rfm()
+ 7 SYSTEMPATH\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin))
+ 8 SYSTEMPATH\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-05-06 11:01:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 11:01:54 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2026-05-06 11:01:54 --> Unknown column 'tgl_klaim' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 300.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(300): mysqli->query('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'197DAA022\', \'persen\', \'100\', \'aktif\', \'2026-05-06 11:01:54\')', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(910): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'197DAA022\', \'persen\', \'100\', \'aktif\', \'2026-05-06 11:01:54\')')
+ 3 SYSTEMPATH\Database\BaseConnection.php(827): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'197DAA022\', \'persen\', \'100\', \'aktif\', \'2026-05-06 11:01:54\')')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (:id_pelanggan:, :nama_reward:, :kode_voucher:, :tipe_diskon:, :nominal_diskon:, :status:, :tgl_klaim:)', [...], false)
+ 5 APPPATH\Controllers\Admin.php(154): CodeIgniter\Database\BaseBuilder->insert([...])
+ 6 SYSTEMPATH\CodeIgniter.php(951): App\Controllers\Admin->broadcast_rfm()
+ 7 SYSTEMPATH\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin))
+ 8 SYSTEMPATH\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-06 11:01:54 --> CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'tgl_klaim' in 'field list'
+[Method: POST, Route: admin/rfm/broadcast]
+in SYSTEMPATH\Database\BaseConnection.php on line 865.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (:id_pelanggan:, :nama_reward:, :kode_voucher:, :tipe_diskon:, :nominal_diskon:, :status:, :tgl_klaim:)', [...], false)
+ 2 APPPATH\Controllers\Admin.php(154): CodeIgniter\Database\BaseBuilder->insert([...])
+ 3 SYSTEMPATH\CodeIgniter.php(951): App\Controllers\Admin->broadcast_rfm()
+ 4 SYSTEMPATH\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin))
+ 5 SYSTEMPATH\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-06 11:01:54 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'tgl_klaim' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 310.
+ 1 SYSTEMPATH\Database\BaseConnection.php(910): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'197DAA022\', \'persen\', \'100\', \'aktif\', \'2026-05-06 11:01:54\')')
+ 2 SYSTEMPATH\Database\BaseConnection.php(827): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'197DAA022\', \'persen\', \'100\', \'aktif\', \'2026-05-06 11:01:54\')')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (:id_pelanggan:, :nama_reward:, :kode_voucher:, :tipe_diskon:, :nominal_diskon:, :status:, :tgl_klaim:)', [...], false)
+ 4 APPPATH\Controllers\Admin.php(154): CodeIgniter\Database\BaseBuilder->insert([...])
+ 5 SYSTEMPATH\CodeIgniter.php(951): App\Controllers\Admin->broadcast_rfm()
+ 6 SYSTEMPATH\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin))
+ 7 SYSTEMPATH\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-06 11:01:54 --> [Caused by] mysqli_sql_exception: Unknown column 'tgl_klaim' in 'field list'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 300.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(300): mysqli->query('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'197DAA022\', \'persen\', \'100\', \'aktif\', \'2026-05-06 11:01:54\')', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(910): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'197DAA022\', \'persen\', \'100\', \'aktif\', \'2026-05-06 11:01:54\')')
+ 3 SYSTEMPATH\Database\BaseConnection.php(827): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (\'2\', \'100k\', \'197DAA022\', \'persen\', \'100\', \'aktif\', \'2026-05-06 11:01:54\')')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `pelanggan_voucher` (`id_pelanggan`, `nama_reward`, `kode_voucher`, `tipe_diskon`, `nominal_diskon`, `status`, `tgl_klaim`) VALUES (:id_pelanggan:, :nama_reward:, :kode_voucher:, :tipe_diskon:, :nominal_diskon:, :status:, :tgl_klaim:)', [...], false)
+ 5 APPPATH\Controllers\Admin.php(154): CodeIgniter\Database\BaseBuilder->insert([...])
+ 6 SYSTEMPATH\CodeIgniter.php(951): App\Controllers\Admin->broadcast_rfm()
+ 7 SYSTEMPATH\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Admin))
+ 8 SYSTEMPATH\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2026-05-06 11:03:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 11:03:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 11:03:12 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 11:03:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 11:03:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 11:03:25 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 11:03:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 11:03:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 11:04:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 11:04:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 11:04:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 11:04:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 11:04:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 11:04:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 11:04:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 11:05:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:20:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:20:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:20:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:20:40 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:20:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:21:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:21:07 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:21:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:21:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:21:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:21:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:21:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:21:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:22:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:22:06 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:24:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:24:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:24:50 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:24:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:25:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:25:25 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:28:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:29:12 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:29:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:29:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:30:02 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:30:06 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:30:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:30:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:30:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:31:19 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:31:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:31:40 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:32:47 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:32:52 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:35:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:35:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:35:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:35:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:35:30 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:35:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:35:40 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:35:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:35:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:35:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:35:49 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:35:49 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:35:50 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:35:53 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:36:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:36:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:36:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:36:18 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:36:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:36:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:44:34 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:44:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:44:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:44:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-05-06 12:44:57 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
