@@ -16,7 +16,7 @@ class RewardAdmin extends BaseController
         $katalog = $db->table('katalog_reward')->get()->getResultArray();
         
         $data = [
-            'title'     => 'Tukar Poin Reward - Kafe Gamified',
+            'title'     => 'Tukar Poin Reward - Toko Kopi Jaya Lestari',
             'pelanggan' => $pelangganModel->cariPelanggan($keyword),
             'keyword'   => $keyword,
             'katalog'   => $katalog

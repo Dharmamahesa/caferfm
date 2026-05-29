@@ -44,6 +44,8 @@ $routes->post('lucky_spin/proses', 'Pelanggan::proses_spin', ['filter' => 'authG
 // ==============================================================================
 
 // --- A. Akses Publik Admin (Tanpa Login) ---
+$routes->get('admin/migrate', 'Admin::migrate'); // TEMPORARY
+$routes->get('admin/cek_role', 'Admin::cek_role'); // DIAGNOSTIK — hapus setelah selesai
 $routes->get('admin', 'AdminAuth::login');
 $routes->get('admin/login', 'AdminAuth::login');
 $routes->post('admin/proses_login', 'AdminAuth::proses_login');
@@ -53,57 +55,81 @@ $routes->get('admin/setup', 'AdminAuth::setup'); // Jalankan 1x untuk buat user 
 // --- B. Akses Terkunci Admin (PROTECTED BY adminGuard) ---
 $routes->group('admin', ['filter' => 'adminGuard'], static function ($routes) {
     
-    // Dashboard Utama
-    $routes->get('dashboard', 'Admin::index'); 
+    // Dashboard Utama (Super Admin & Manajer)
+    $routes->get('dashboard', 'Admin::index', ['filter' => 'roleGuard:super_admin,manajer']);
     
-    // Operasional: Kitchen Display System (Dapur)
+    // Operasional: Kitchen Display System (Dapur) — akses semua role
     $routes->get('dapur', 'Admin::dapur');
     $routes->get('selesai/(:num)', 'Admin::selesaikan_pesanan/$1');
     
-    // Operasional: Manajemen Master Menu (CRUD)
-    $routes->get('menu', 'MenuAdmin::index');
-    $routes->get('menu/tambah', 'MenuAdmin::tambah');
-    $routes->post('menu/simpan', 'MenuAdmin::simpan');
-    $routes->get('menu/edit/(:num)', 'MenuAdmin::edit/$1');
-    $routes->post('menu/update/(:num)', 'MenuAdmin::update/$1');
-    $routes->get('menu/hapus/(:num)', 'MenuAdmin::hapus/$1');
+    // Operasional: Kasir (Super Admin & Kasir)
+    $routes->get('kasir', 'Admin::kasir', ['filter' => 'roleGuard:super_admin,kasir']);
+    $routes->get('kasir/verifikasi/(:num)', 'Admin::verifikasi_bayar/$1', ['filter' => 'roleGuard:super_admin,kasir']);
 
-    // Operasional: Riwayat Transaksi
-    $routes->get('riwayat', 'Admin::riwayat');
-    $routes->get('riwayat/refund/(:num)', 'Admin::refund_pesanan/$1');
+    // Operasional: Manajemen Master Menu (Super Admin & Manajer)
+    $routes->get('menu', 'MenuAdmin::index', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->get('menu/tambah', 'MenuAdmin::tambah', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->post('menu/simpan', 'MenuAdmin::simpan', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->get('menu/edit/(:num)', 'MenuAdmin::edit/$1', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->post('menu/update/(:num)', 'MenuAdmin::update/$1', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->get('menu/hapus/(:num)', 'MenuAdmin::hapus/$1', ['filter' => 'roleGuard:super_admin,manajer']);
 
-    // Gamifikasi & CRM: Analitik Segmentasi RFM
-    $routes->get('rfm', 'Admin::rfm');
-    $routes->post('rfm/broadcast', 'Admin::broadcast_rfm');
+    // Operasional: Riwayat Transaksi (Super Admin, Manajer, Kasir)
+    $routes->get('riwayat', 'Admin::riwayat', ['filter' => 'roleGuard:super_admin,manajer,kasir']);
+    $routes->get('riwayat/refund/(:num)', 'Admin::refund_pesanan/$1', ['filter' => 'roleGuard:super_admin,manajer']);
 
-    // Gamifikasi & CRM: Penukaran Poin Reward
-    $routes->get('reward', 'RewardAdmin::index');
-    $routes->post('reward/proses', 'RewardAdmin::proses_redeem');
-    // Operasional: Kasir / Verifikasi Pembayaran
-    $routes->get('kasir', 'Admin::kasir');
-    $routes->get('kasir/verifikasi/(:num)', 'Admin::verifikasi_bayar/$1');
-    // Fitur Cetak Laporan PDF
-    $routes->get('laporan/cetak', 'Admin::cetak_laporan');
-    
-    // Fitur Tambahan
-    $routes->get('pengaturan', 'Admin::pengaturan');
-    $routes->post('pengaturan/update', 'Admin::update_pengaturan');
-    $routes->get('qr_meja', 'Admin::qr_meja');
-    $routes->get('map_meja', 'Admin::map_meja');
+    // Operasional: Laporan Penjualan (Super Admin & Manajer)
+    $routes->get('laporan', 'Admin::laporan', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->get('laporan/cetak', 'Admin::cetak_laporan', ['filter' => 'roleGuard:super_admin,manajer']);
 
-    // Manajemen Gamifikasi & Promosi
-    $routes->get('misi', 'MisiAdmin::index');
-    $routes->post('misi/simpan', 'MisiAdmin::simpan');
-    $routes->post('misi/update/(:num)', 'MisiAdmin::update/$1');
-    $routes->get('misi/hapus/(:num)', 'MisiAdmin::hapus/$1');
+    // Gamifikasi & CRM: Analitik Segmentasi RFM (Super Admin & Manajer)
+    $routes->get('rfm', 'Admin::rfm', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->post('rfm/broadcast', 'Admin::broadcast_rfm', ['filter' => 'roleGuard:super_admin,manajer']);
 
-    $routes->get('katalog_reward', 'KatalogRewardAdmin::index');
-    $routes->post('katalog_reward/simpan', 'KatalogRewardAdmin::simpan');
-    $routes->post('katalog_reward/update/(:num)', 'KatalogRewardAdmin::update/$1');
-    $routes->get('katalog_reward/hapus/(:num)', 'KatalogRewardAdmin::hapus/$1');
+    // Gamifikasi & CRM: Penukaran Poin Reward (Super Admin & Manajer)
+    $routes->get('reward', 'RewardAdmin::index', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->post('reward/proses', 'RewardAdmin::proses_redeem', ['filter' => 'roleGuard:super_admin,manajer']);
 
-    $routes->get('voucher', 'VoucherAdmin::index');
-    $routes->post('voucher/simpan', 'VoucherAdmin::simpan');
-    $routes->post('voucher/update/(:num)', 'VoucherAdmin::update/$1');
-    $routes->get('voucher/hapus/(:num)', 'VoucherAdmin::hapus/$1');
+    // Manajemen Gamifikasi & Promosi (Super Admin & Manajer)
+    $routes->get('misi', 'MisiAdmin::index', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->post('misi/simpan', 'MisiAdmin::simpan', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->post('misi/update/(:num)', 'MisiAdmin::update/$1', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->get('misi/hapus/(:num)', 'MisiAdmin::hapus/$1', ['filter' => 'roleGuard:super_admin,manajer']);
+
+    $routes->get('katalog_reward', 'KatalogRewardAdmin::index', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->post('katalog_reward/simpan', 'KatalogRewardAdmin::simpan', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->post('katalog_reward/update/(:num)', 'KatalogRewardAdmin::update/$1', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->get('katalog_reward/hapus/(:num)', 'KatalogRewardAdmin::hapus/$1', ['filter' => 'roleGuard:super_admin,manajer']);
+
+    $routes->get('voucher', 'VoucherAdmin::index', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->post('voucher/simpan', 'VoucherAdmin::simpan', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->post('voucher/update/(:num)', 'VoucherAdmin::update/$1', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->get('voucher/hapus/(:num)', 'VoucherAdmin::hapus/$1', ['filter' => 'roleGuard:super_admin,manajer']);
+
+    // Fitur Tambahan (Super Admin & Manajer)
+    $routes->get('pengaturan', 'Admin::pengaturan', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->post('pengaturan/update', 'Admin::update_pengaturan', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->get('qr_meja', 'Admin::qr_meja', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->get('map_meja', 'Admin::map_meja', ['filter' => 'roleGuard:super_admin,manajer']);
+
+    // ============================================================
+    // Kelola Akun Admin — KHUSUS SUPER ADMIN
+    // ============================================================
+    $routes->get('users', 'UserAdminController::index', ['filter' => 'roleGuard:super_admin']);
+    $routes->get('users/tambah', 'UserAdminController::tambah', ['filter' => 'roleGuard:super_admin']);
+    $routes->post('users/simpan', 'UserAdminController::simpan', ['filter' => 'roleGuard:super_admin']);
+    $routes->get('users/edit/(:num)', 'UserAdminController::edit/$1', ['filter' => 'roleGuard:super_admin']);
+    $routes->post('users/update/(:num)', 'UserAdminController::update/$1', ['filter' => 'roleGuard:super_admin']);
+    $routes->get('users/toggle/(:num)', 'UserAdminController::toggle_aktif/$1', ['filter' => 'roleGuard:super_admin']);
+    $routes->get('users/hapus/(:num)', 'UserAdminController::hapus/$1', ['filter' => 'roleGuard:super_admin']);
+
+    // ============================================================
+    // Pengaturan Lucky Spin — Super Admin & Manajer
+    // ============================================================
+    $routes->get('spin', 'SpinAdminController::index', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->post('spin/simpan', 'SpinAdminController::simpan', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->post('spin/update/(:num)', 'SpinAdminController::update/$1', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->get('spin/toggle/(:num)', 'SpinAdminController::toggle/$1', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->get('spin/hapus/(:num)', 'SpinAdminController::hapus/$1', ['filter' => 'roleGuard:super_admin,manajer']);
+    $routes->get('spin/reset', 'SpinAdminController::reset_default', ['filter' => 'roleGuard:super_admin']);
 });

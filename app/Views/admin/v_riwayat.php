@@ -108,6 +108,9 @@
                             <?php else: ?>
                                 <span class="bg-[#f7f7f7] text-[#777] border border-[#E5E5E5] text-[9px] px-2 py-0.5 rounded-md uppercase font-extrabold tracking-widest inline-block mt-1">Guest</span>
                             <?php endif; ?>
+                            <?php if(isset($r['poin_didapat']) && $r['poin_didapat'] > 0): ?>
+                                <div class="mt-1 text-[10px] text-[#58CC02] font-bold">⭐ +<?= $r['poin_didapat'] ?> Poin</div>
+                            <?php endif; ?>
                         </td>
                         <td class="px-6 py-5">
                             <span class="font-extrabold text-[#58CC02] bg-[#58CC02]/10 border border-[#58CC02]/20 px-3 py-1.5 rounded-lg text-xs shadow-sm">
@@ -175,6 +178,9 @@
                         <span class="text-xs text-[#FF4B4B] font-bold">Refunded</span>
                     <?php else: ?>
                         <p class="font-extrabold text-lg text-green-600">Rp <?= number_format($r['total_bayar'], 0, ',', '.') ?></p>
+                    <?php endif; ?>
+                    <?php if(isset($r['poin_didapat']) && $r['poin_didapat'] > 0): ?>
+                        <p class="text-[10px] text-[#58CC02] font-bold mt-0.5">⭐ +<?= $r['poin_didapat'] ?> Poin</p>
                     <?php endif; ?>
                 </div>
                 <div class="flex items-center gap-2">

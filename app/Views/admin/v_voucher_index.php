@@ -56,6 +56,9 @@
                         </td>
                         <td class="px-6 py-4 font-bold text-[#4B4B4B]">
                             <?= $v['kuota'] == 0 ? '<span class="text-[#AFAFAF]">Unlimited</span>' : number_format($v['kuota'], 0, ',', '.') ?>
+                            <?php if(!empty($v['target_id_menu'])): ?>
+                                <div class="text-[10px] text-[#1CB0F6] bg-[#1CB0F6]/10 px-2 py-0.5 rounded mt-1 inline-block">Item Khusus</div>
+                            <?php endif; ?>
                         </td>
                         <td class="px-6 py-4">
                             <span class="<?= $v['status'] == 'aktif' ? 'bg-green-100 text-green-700 border-green-200' : 'bg-red-100 text-red-700 border-red-200' ?> px-3 py-1 rounded-full text-xs font-bold uppercase border shadow-sm inline-block">
@@ -144,8 +147,16 @@
                 </div>
             </div>
             <div>
-                <label class="block text-xs font-extrabold text-[#777] uppercase mb-2">Kuota Penggunaan (0 = Unlimited)</label>
-                <input type="number" name="kuota" value="0" class="w-full px-4 py-3 rounded-xl bg-[#f7f7f7] border border-[#E5E5E5] focus:bg-white focus:border-[#58CC02] outline-none font-bold text-[#4B4B4B] transition-all">
+                <label class="block text-xs font-extrabold text-[#777] uppercase mb-2">Target Item Khusus (Opsional)</label>
+                <select name="target_id_menu" class="w-full px-4 py-3 rounded-xl bg-[#f7f7f7] border border-[#E5E5E5] focus:bg-white focus:border-[#58CC02] outline-none font-bold text-[#4B4B4B] transition-all">
+                    <option value="">-- Berlaku untuk Semua Menu --</option>
+                    <?php if(!empty($menuList)): ?>
+                        <?php foreach($menuList as $m): ?>
+                            <option value="<?= $m['id_menu'] ?>"><?= esc($m['kode_item'] ? '['.$m['kode_item'].'] ' : '') . esc($m['nama_item']) ?></option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </select>
+                <p class="text-[10px] text-[#AFAFAF] mt-1 font-bold">Jika dipilih, diskon HANYA memotong harga item ini.</p>
             </div>
             
             <button type="submit" class="w-full mt-4 bg-gray-800 text-white font-extrabold py-4 rounded-xl shadow-none hover:bg-gray-900 active:scale-95 transition-all">

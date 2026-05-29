@@ -26,14 +26,28 @@
         <div class="bg-white rounded-2xl shadow-sm border border-[#E5E5E5] overflow-hidden relative group">
             
             <?php 
-                $statusColor = 'bg-yellow-50 text-yellow-600 border-yellow-200';
+                $statusColor = 'bg-gray-50 text-gray-600 border-gray-200';
                 $statusIcon = '🕒';
                 $statusText = 'Diproses';
                 
-                if($p['status_pesanan'] == 'Selesai') {
-                    $statusColor = 'bg-green-50 text-green-600 border-green-200';
+                $statusDb = strtolower($p['status_pesanan']);
+                
+                if($statusDb == 'belum_bayar') {
+                    $statusColor = 'bg-orange-50 text-orange-500 border-orange-200';
+                    $statusIcon = '💳';
+                    $statusText = 'Menunggu Pembayaran';
+                } elseif($statusDb == 'pending') {
+                    $statusColor = 'bg-blue-50 text-blue-500 border-blue-200';
+                    $statusIcon = '👨‍🍳';
+                    $statusText = 'Diproses Dapur';
+                } elseif($statusDb == 'selesai') {
+                    $statusColor = 'bg-[#58CC02]/10 text-[#58CC02] border-[#58CC02]/20';
                     $statusIcon = '✅';
                     $statusText = 'Selesai';
+                } elseif($statusDb == 'refund') {
+                    $statusColor = 'bg-[#FF4B4B]/10 text-[#FF4B4B] border-[#FF4B4B]/20';
+                    $statusIcon = '❌';
+                    $statusText = 'Dibatalkan / Refund';
                 }
             ?>
 
@@ -65,10 +79,20 @@
                     </div>
                 </div>
 
-                <div class="bg-white p-4 rounded-xl border border-[#E5E5E5] text-sm">
+                <div class="bg-white p-4 rounded-xl border border-[#E5E5E5] text-sm mb-3">
                     <p class="text-gray-600 font-medium">Metode: <span class="font-bold text-[#4B4B4B]"><?= esc($p['metode_bayar']) ?></span></p>
                     <p class="text-gray-600 font-medium">Meja: <span class="font-bold text-[#4B4B4B]"><?= esc($p['no_meja']) ?></span></p>
                 </div>
+
+                <?php if(isset($p['poin_didapat']) && $p['poin_didapat'] > 0): ?>
+                    <div class="flex items-center gap-2 bg-[#58CC02]/10 p-3 rounded-xl border border-[#58CC02]/20">
+                        <span class="text-[#58CC02] text-lg">⭐</span>
+                        <div>
+                            <p class="text-[10px] font-extrabold text-[#58CC02] uppercase tracking-widest">Poin Didapat</p>
+                            <p class="font-bold text-[#4B4B4B] text-sm">+<?= $p['poin_didapat'] ?> Poin Loyalitas</p>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
 
         </div>

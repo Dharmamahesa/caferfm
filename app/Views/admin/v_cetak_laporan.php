@@ -27,9 +27,9 @@
     </div>
 
     <div class="text-center border-b-2 border-black pb-6 mb-6">
-        <h1 class="text-3xl font-extrabold uppercase tracking-widest">KAFE GAMIFIED</h1>
+        <h1 class="text-3xl font-extrabold uppercase tracking-widest">TOKO KOPI JAYA LESTARI</h1>
         <p class="text-sm">Jl. Skripsi Mahasiswa No. 1, Kota Akademik, 65145</p>
-        <p class="text-sm">Telp: (0341) 123456 | Email: hello@kafegamified.com</p>
+        <p class="text-sm">Telp: (0341) 123456 | Email: hello@jayalestari.com</p>
         
         <h2 class="text-xl font-bold mt-6 uppercase">Laporan Pendapatan Harian</h2>
         <p class="text-sm font-semibold">Periode: <?= $tanggal ?></p>

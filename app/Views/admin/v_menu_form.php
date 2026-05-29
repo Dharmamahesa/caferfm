@@ -29,9 +29,18 @@
 
     <form action="<?= $actionUrl ?>" method="POST" enctype="multipart/form-data" class="space-y-6">
         
-        <div>
-            <label class="block text-[10px] font-extrabold text-[#AFAFAF] uppercase tracking-widest mb-2">Nama Menu</label>
-            <input type="text" name="nama_item" value="<?= $isEdit ? esc($menu['nama_item']) : '' ?>" placeholder="Contoh: Kopi Susu Aren" required class="w-full px-5 py-4 rounded-xl bg-[#f7f7f7] border border-[#E5E5E5] focus:bg-white focus:border-[#58CC02] focus:ring-4 focus:ring-[#1CB0F6]/20 outline-none text-[#4B4B4B] font-bold transition-all shadow-sm">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-[10px] font-extrabold text-[#AFAFAF] uppercase tracking-widest mb-2 flex items-center gap-2">
+                    Kode Item
+                    <span class="bg-[#1CB0F6]/10 text-[#1CB0F6] px-2 py-0.5 rounded-full text-[8px]">Opsional</span>
+                </label>
+                <input type="text" name="kode_item" value="<?= $isEdit ? esc($menu['kode_item'] ?? '') : '' ?>" placeholder="Contoh: KSA-01" class="w-full px-5 py-4 rounded-xl bg-[#f7f7f7] border border-[#E5E5E5] focus:bg-white focus:border-[#58CC02] focus:ring-4 focus:ring-[#1CB0F6]/20 outline-none text-[#4B4B4B] font-bold uppercase transition-all shadow-sm">
+            </div>
+            <div>
+                <label class="block text-[10px] font-extrabold text-[#AFAFAF] uppercase tracking-widest mb-2">Nama Menu</label>
+                <input type="text" name="nama_item" value="<?= $isEdit ? esc($menu['nama_item']) : '' ?>" placeholder="Contoh: Kopi Susu Aren" required class="w-full px-5 py-4 rounded-xl bg-[#f7f7f7] border border-[#E5E5E5] focus:bg-white focus:border-[#58CC02] focus:ring-4 focus:ring-[#1CB0F6]/20 outline-none text-[#4B4B4B] font-bold transition-all shadow-sm">
+            </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">

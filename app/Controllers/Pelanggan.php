@@ -52,15 +52,26 @@ class Pelanggan extends BaseController
 
         // Ambil data voucher pelanggan
         $db = \Config\Database::connect();
+        
+        // --- FITUR EXPIRED VOUCHER ---
+        // Tandai hangus untuk voucher aktif yang umurnya > 7 hari
+        $tujuhHariLalu = date('Y-m-d H:i:s', strtotime('-7 days'));
+        $db->table('pelanggan_voucher')
+           ->where('id_pelanggan', $idPelanggan)
+           ->where('status', 'aktif')
+           ->where('created_at <', $tujuhHariLalu)
+           ->update(['status' => 'hangus']);
+
+        // Hanya tampilkan voucher yang masih aktif (sudah terpakai / hangus akan hilang)
         $voucher = $db->table('pelanggan_voucher')
             ->where('id_pelanggan', $idPelanggan)
-            ->orderBy('status', 'ASC')
+            ->where('status', 'aktif')
             ->orderBy('created_at', 'DESC')
             ->get()->getResultArray();
 
         // Bungkus data untuk dikirim ke View
         $data = [
-            'title'        => 'Profil & Reward - Kafe Gamified',
+            'title'        => 'Profil & Reward - Toko Kopi Jaya Lestari',
             'user'         => $user,
             'tier'         => $tier,
             'nextTier'     => $nextTier,
@@ -196,7 +207,8 @@ class Pelanggan extends BaseController
                 'kode_voucher'   => $kodeVoucher,
                 'tipe_diskon'    => $reward['tipe_diskon'],
                 'nominal_diskon' => $reward['nominal_diskon'],
-                'status'         => 'aktif'
+                'status'         => 'aktif',
+                'created_at'     => date('Y-m-d H:i:s')
             ]);
 
             return redirect()->to(base_url('profil'))->with('sukses', "Berhasil menukar poin! Reward {$reward['nama_reward']} telah ditambahkan ke Voucher Saya.");
@@ -214,10 +226,19 @@ class Pelanggan extends BaseController
         $pelangganModel = new PelangganModel();
         
         $user = $pelangganModel->find($idPelanggan);
+
+        // Ambil konfigurasi hadiah dari database (hanya yang aktif)
+        $db    = \Config\Database::connect();
+        $this->ensureSpinTable($db);
+        $hadiah = $db->table('spin_hadiah')
+                     ->where('is_active', 1)
+                     ->orderBy('urutan', 'ASC')
+                     ->get()->getResultArray();
         
         $data = [
-            'title' => 'Lucky Spin - Kafe Gamified',
-            'user'  => $user
+            'title'  => 'Lucky Spin - Toko Kopi Jaya Lestari',
+            'user'   => $user,
+            'hadiah' => $hadiah,
         ];
 
         return view('pelanggan/v_lucky_spin', $data);
@@ -243,66 +264,103 @@ class Pelanggan extends BaseController
 
     public function proses_spin()
     {
-        $idPelanggan = session()->get('id_pelanggan');
+        $idPelanggan    = session()->get('id_pelanggan');
         $pelangganModel = new PelangganModel();
-        $user = $pelangganModel->find($idPelanggan);
+        $user           = $pelangganModel->find($idPelanggan);
 
         if ($user['spin_chances'] <= 0) {
             return $this->response->setJSON(['status' => 'error', 'message' => 'Anda tidak memiliki tiket Spin!']);
         }
 
-        // Deduct 1 chance
-        $pelangganModel->update($idPelanggan, [
-            'spin_chances' => $user['spin_chances'] - 1
-        ]);
+        // Kurangi tiket
+        $pelangganModel->update($idPelanggan, ['spin_chances' => $user['spin_chances'] - 1]);
 
-        // Daftar Hadiah (Probabilitas bisa diatur di sini)
-        $prizes = [
-            ['id' => 1, 'nama' => 'FREE AREN LATTE', 'tipe' => 'voucher', 'nominal' => 0, 'weight' => 5],
-            ['id' => 2, 'nama' => 'DISC 6K', 'tipe' => 'voucher', 'nominal' => 6000, 'weight' => 15],
-            ['id' => 3, 'nama' => '100 POINTS', 'tipe' => 'poin', 'nominal' => 100, 'weight' => 10],
-            ['id' => 4, 'nama' => '50 POINTS', 'tipe' => 'poin', 'nominal' => 50, 'weight' => 20],
-            ['id' => 5, 'nama' => '30 POINTS', 'tipe' => 'poin', 'nominal' => 30, 'weight' => 30],
-            ['id' => 6, 'nama' => 'THANKS', 'tipe' => 'zonk', 'nominal' => 0, 'weight' => 20],
-        ];
+        // ====================================================
+        // Ambil hadiah dari database (hanya yang aktif)
+        // ====================================================
+        $db = \Config\Database::connect();
+        $this->ensureSpinTable($db);
+        $prizes = $db->table('spin_hadiah')
+                     ->where('is_active', 1)
+                     ->orderBy('urutan', 'ASC')
+                     ->get()->getResultArray();
+
+        if (empty($prizes)) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Hadiah spin belum dikonfigurasi.']);
+        }
 
         // Weighted random selection
         $totalWeight = array_sum(array_column($prizes, 'weight'));
-        $rand = mt_rand(1, $totalWeight);
+        $rand        = mt_rand(1, $totalWeight);
         
         $selectedPrize = null;
         $currentWeight = 0;
-        foreach ($prizes as $prize) {
+        foreach ($prizes as $i => $prize) {
             $currentWeight += $prize['weight'];
             if ($rand <= $currentWeight) {
-                $selectedPrize = $prize;
+                // prize_id = posisi 1-based dalam array (dipakai frontend untuk animasi)
+                $selectedPrize = array_merge($prize, ['prize_index' => $i + 1]);
                 break;
             }
         }
 
         // Berikan hadiah
-        if ($selectedPrize['tipe'] == 'poin') {
+        if ($selectedPrize['tipe'] === 'poin') {
+            $tambahPoin = (int) $selectedPrize['nominal'];
             $pelangganModel->update($idPelanggan, [
-                'poin_loyalitas' => $user['poin_loyalitas'] + $selectedPrize['nominal']
+                'poin_loyalitas' => $user['poin_loyalitas'] + $tambahPoin
             ]);
-        } elseif ($selectedPrize['tipe'] == 'voucher') {
-            $db = \Config\Database::connect();
-            $kodeVoucher = 'SPIN-' . strtoupper(substr(md5(uniqid()), 0, 5));
+        } elseif ($selectedPrize['tipe'] === 'voucher') {
+            $kodeVoucher = 'SPIN-' . strtoupper(substr(md5(uniqid()), 0, 6));
+
+            // Untuk voucher produk: ambil harga menu sebagai nilai diskon (gratis = diskon 100% harga)
+            $nominalDiskon   = $selectedPrize['nominal'];
+            $tipeDiskon      = $selectedPrize['tipe_diskon'];
+            $targetIdMenu    = $selectedPrize['target_id_menu'] ?? null;
+
+            if ($tipeDiskon === 'produk' && !empty($targetIdMenu)) {
+                // Ambil harga menu untuk disimpan sebagai nominal (agar checkout tahu berapa nilai diskonnya)
+                $menuData = $db->table('menu')->select('harga, nama_item')->where('id_menu', $targetIdMenu)->get()->getRowArray();
+                if ($menuData) {
+                    $nominalDiskon = $menuData['harga'];
+                }
+            }
+
             $db->table('pelanggan_voucher')->insert([
                 'id_pelanggan'   => $idPelanggan,
-                'nama_reward'    => $selectedPrize['nama'],
+                'nama_reward'    => $selectedPrize['nama_hadiah'],
                 'kode_voucher'   => $kodeVoucher,
-                'tipe_diskon'    => $selectedPrize['nominal'] > 0 ? 'nominal' : 'produk',
-                'nominal_diskon' => $selectedPrize['nominal'],
-                'status'         => 'aktif'
+                'tipe_diskon'    => $tipeDiskon,
+                'nominal_diskon' => $nominalDiskon,
+                'target_id_menu' => $targetIdMenu,
+                'status'         => 'aktif',
+                'created_at'     => date('Y-m-d H:i:s')
             ]);
         }
+        // zonk: tidak ada hadiah
 
         return $this->response->setJSON([
-            'status' => 'success',
-            'prize_id' => $selectedPrize['id'],
-            'prize_name' => $selectedPrize['nama'],
-            'prize_type' => $selectedPrize['tipe']
+            'status'      => 'success',
+            'prize_index' => $selectedPrize['prize_index'],
+            'prize_id'    => $selectedPrize['prize_index'], // alias untuk kompatibilitas JS lama
+            'prize_name'  => $selectedPrize['nama_hadiah'],
+            'prize_type'  => $selectedPrize['tipe'],
+            'prize_emoji' => $selectedPrize['emoji'],
         ]);
+    }
+
+    // ----------------------------------------------------------------
+    // HELPER: Pastikan tabel spin_hadiah ada
+    // ----------------------------------------------------------------
+    private function ensureSpinTable($db)
+    {
+        if (!$db->tableExists('spin_hadiah')) {
+            // Inisiasi via SpinAdminController
+            $spinCtrl = new \App\Controllers\SpinAdminController();
+            // Panggil via refleksi private method
+            $reflection = new \ReflectionMethod($spinCtrl, 'ensureTable');
+            $reflection->setAccessible(true);
+            $reflection->invoke($spinCtrl, $db);
+        }
     }
 }

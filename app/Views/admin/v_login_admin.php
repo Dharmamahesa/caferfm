@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Admin - Kafe Gamified</title>
+    <title>Login Admin - Toko Kopi Jaya Lestari</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="<?= base_url('css/duolingo-theme.css') ?>" rel="stylesheet">
@@ -21,7 +21,7 @@
             <div class="w-20 h-20 bg-[#58CC02] rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-[0_4px_0_#4BB200]">
                 <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
             </div>
-            <h1 class="text-3xl font-black text-white tracking-widest uppercase font-display">Admin Area</h1>
+                <h1 class="text-3xl font-extrabold text-[#4B4B4B] tracking-tight">Admin<br><span class="text-[#1CB0F6]">Jaya Lestari</span></h1>
             <p class="text-white/40 mt-2 text-xs font-bold tracking-widest uppercase">Akses Terbatas Karyawan</p>
         </div>
 

@@ -97,7 +97,17 @@
                 <?php foreach($voucher as $v): ?>
                 <div class="<?= $v['status'] == 'aktif' ? 'bg-[#58CC02]/5 border-[#58CC02]/20' : 'bg-[#f7f7f7] border-[#E5E5E5] opacity-60 grayscale' ?> rounded-xl p-4 border-2 flex justify-between items-center group/voucher hover:shadow-md transition-all">
                     <div>
-                        <p class="text-[10px] font-extrabold <?= $v['status'] == 'aktif' ? 'text-[#58CC02]' : 'text-[#AFAFAF]' ?> uppercase tracking-widest mb-1"><?= $v['status'] == 'aktif' ? 'Siap Digunakan' : 'Sudah Terpakai' ?></p>
+                        <?php 
+                            $created = strtotime($v['created_at']);
+                            $days_passed = floor((time() - $created) / (60 * 60 * 24));
+                            $days_left = max(0, 7 - $days_passed);
+                        ?>
+                        <div class="flex items-center gap-2 mb-1">
+                            <p class="text-[10px] font-extrabold <?= $v['status'] == 'aktif' ? 'text-[#58CC02]' : 'text-[#AFAFAF]' ?> uppercase tracking-widest"><?= $v['status'] == 'aktif' ? 'Siap Digunakan' : 'Sudah Terpakai' ?></p>
+                            <?php if($v['status'] == 'aktif'): ?>
+                                <span class="text-[8px] bg-[#FF4B4B]/10 text-[#FF4B4B] px-2 py-0.5 rounded-full font-bold">⏳ Sisa <?= $days_left ?> hari</span>
+                            <?php endif; ?>
+                        </div>
                         <h4 class="font-bold text-[#4B4B4B] text-sm mb-2"><?= esc($v['nama_reward']) ?></h4>
                         <div class="flex items-center gap-2">
                             <code class="bg-white px-2 py-1 rounded text-[#4B4B4B] font-extrabold text-xs shadow-sm border border-[#E5E5E5] select-all"><?= esc($v['kode_voucher']) ?></code>

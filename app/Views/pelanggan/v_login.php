@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Kafe Gamified</title>
+    <title>Login - Toko Kopi Jaya Lestari</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="<?= base_url('css/duolingo-theme.css') ?>" rel="stylesheet">
@@ -16,7 +16,7 @@
             <div class="w-16 h-16 bg-[#58CC02] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-[0_4px_0_#4BB200]">
                 <span class="text-3xl text-white">☕</span>
             </div>
-            <h1 class="text-3xl font-black text-[#100F3E] tracking-tight">Selamat Datang!</h1>
+            <h1 class="text-3xl font-black text-[#100F3E] tracking-tight">Toko Kopi<br>Jaya Lestari</h1>
             <p class="text-[#777] mt-2 text-sm font-semibold">Masuk untuk mulai mengumpulkan poin loyalitas.</p>
         </div>
 

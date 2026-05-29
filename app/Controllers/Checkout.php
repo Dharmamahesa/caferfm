@@ -9,7 +9,9 @@ class Checkout extends BaseController
 {
     public function cek_voucher()
     {
-        $kode = $this->request->getJSON()->kode ?? '';
+        $json = $this->request->getJSON();
+        $kode = $json->kode ?? '';
+        $cart = $json->cart ?? [];
         $idPelanggan = session()->get('id_pelanggan');
 
         if(empty($kode) || !$idPelanggan) {
@@ -34,32 +36,103 @@ class Checkout extends BaseController
                 }
             }
 
+            // Cek target item jika ada
+            $exactDiscount = null;
+            if (!empty($voucherGlobal['target_id_menu'])) {
+                $targetId = $voucherGlobal['target_id_menu'];
+                $itemInCart = false;
+                $targetSubtotal = 0;
+                
+                if (is_array($cart) || is_object($cart)) {
+                    foreach($cart as $c) {
+                        if (isset($c->id) && $c->id == $targetId) {
+                            $itemInCart = true;
+                            $targetSubtotal += $c->subtotal;
+                        }
+                    }
+                }
+                
+                if (!$itemInCart) {
+                    return $this->response->setJSON(['status' => 'error', 'message' => 'Voucher ini hanya berlaku untuk menu spesifik yang tidak ada di keranjang Anda.']);
+                }
+                
+                // Hitung diskon khusus item
+                if ($voucherGlobal['tipe_diskon'] == 'persen') {
+                    $exactDiscount = $targetSubtotal * ($voucherGlobal['diskon'] / 100);
+                } else {
+                    $exactDiscount = $voucherGlobal['diskon'];
+                }
+                // Batasi maksimal diskon
+                if ($exactDiscount > $targetSubtotal) {
+                    $exactDiscount = $targetSubtotal;
+                }
+            }
+
             return $this->response->setJSON([
                 'status' => 'success', 
                 'message' => 'Promo ' . $voucherGlobal['nama_voucher'] . ' berhasil diterapkan!',
                 'diskon' => $voucherGlobal['diskon'],
                 'tipe' => $voucherGlobal['tipe_diskon'],
+                'target_id_menu' => $voucherGlobal['target_id_menu'],
+                'exact_discount' => $exactDiscount,
                 'id_voucher_global' => $voucherGlobal['id_voucher'] // Flag untuk membedakan
             ]);
         }
 
         // 2. Cek di tabel pelanggan_voucher (Tukar Poin Pribadi)
+        $tujuhHariLalu = date('Y-m-d H:i:s', strtotime('-7 days'));
         $voucherPribadi = $db->table('pelanggan_voucher')
             ->where('kode_voucher', $kode)
             ->where('id_pelanggan', $idPelanggan)
             ->where('status', 'aktif')
+            ->where('created_at >=', $tujuhHariLalu) // Pastikan belum hangus (<= 7 hari)
             ->get()->getRowArray();
 
         if($voucherPribadi) {
             $diskon = $voucherPribadi['nominal_diskon'];
-            $tipe = $voucherPribadi['tipe_diskon'];
+            $tipe   = $voucherPribadi['tipe_diskon'];
+
+            // Cek apakah voucher ini terikat ke menu tertentu (voucher produk gratis)
+            $targetIdMenu  = $voucherPribadi['target_id_menu'] ?? null;
+            $exactDiscount = null;
+
+            if (!empty($targetIdMenu)) {
+                // Cek apakah item target ada di keranjang
+                $itemInCart     = false;
+                $targetSubtotal = 0;
+
+                if (is_array($cart) || is_object($cart)) {
+                    foreach ($cart as $c) {
+                        if (isset($c->id) && $c->id == $targetIdMenu) {
+                            $itemInCart      = true;
+                            $targetSubtotal += $c->subtotal;
+                        }
+                    }
+                }
+
+                if (!$itemInCart) {
+                    // Ambil nama menu untuk pesan error yang jelas
+                    $db2      = \Config\Database::connect();
+                    $namaMenu = $db2->table('menu')->select('nama_item')->where('id_menu', $targetIdMenu)->get()->getRowArray();
+                    $label    = $namaMenu ? "\"{$namaMenu['nama_item']}\"" : 'menu tertentu';
+                    return $this->response->setJSON([
+                        'status'  => 'error',
+                        'message' => "Voucher ini hanya berlaku untuk item $label yang tidak ada di keranjang Anda."
+                    ]);
+                }
+
+                // Diskon nominal = harga 1 item (gratis satu porsi)
+                $exactDiscount = min($diskon, $targetSubtotal);
+            }
 
             return $this->response->setJSON([
-                'status' => 'success', 
-                'message' => 'Voucher ' . $voucherPribadi['nama_reward'] . ' berhasil diterapkan!',
-                'diskon' => $diskon,
-                'tipe' => $tipe,
-                'id_pelanggan_voucher' => $voucherPribadi['id_voucher'] // Flag untuk membedakan
+                'status'          => 'success',
+                'message'         => 'Voucher ' . $voucherPribadi['nama_reward'] . ' berhasil diterapkan!',
+                'diskon'          => $diskon,
+                'tipe'            => $tipe,
+                'target_id_menu'  => $targetIdMenu,
+                'exact_discount'  => $exactDiscount,
+                'id_pelanggan_voucher' => $voucherPribadi['id_voucher']
             ]);
         }
 
@@ -148,24 +221,10 @@ class Checkout extends BaseController
                     $db->query("UPDATE voucher_global SET kuota = kuota - 1 WHERE id_voucher = ? AND kuota > 0", [$json->id_voucher_global]);
                 }
 
-                // =========================================================
-                // TRIGGER ALGORITMA RFM & GAMIFIKASI
-                // =========================================================
-                $pesanTambahan = "";
-                
-                if ($idPelanggan != 1) {
-                    $rfmModel = new RfmModel();
-                    $tambahanPoin = $rfmModel->hitungDanUpdatePoin($idPelanggan);
-                    
-                    if ($tambahanPoin) {
-                        $pesanTambahan = " Anda mendapatkan +$tambahanPoin Poin Loyalitas!";
-                    }
-                }
-
                 // Berikan respon kembali ke halaman Keranjang
                 return $this->response->setJSON([
                     'status'  => 'success',
-                    'message' => 'Pesanan dicatat! Silakan bayar ke kasir.' . $pesanTambahan
+                    'message' => 'Pesanan dicatat! Silakan bayar ke kasir.'
                 ]);
 
             } else {

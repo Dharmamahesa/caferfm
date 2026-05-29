@@ -8,10 +8,12 @@ class VoucherAdmin extends BaseController
     {
         $db = \Config\Database::connect();
         $voucher = $db->table('voucher_global')->get()->getResultArray();
+        $menuList = $db->table('menu')->orderBy('nama_item', 'ASC')->get()->getResultArray();
 
         $data = [
             'title'   => 'Manajemen Voucher Promo',
-            'voucher' => $voucher
+            'voucher' => $voucher,
+            'menuList'=> $menuList
         ];
 
         return view('admin/v_voucher_index', $data);
@@ -33,6 +35,7 @@ class VoucherAdmin extends BaseController
             'kode_voucher' => strtoupper($postData['kode_voucher']),
             'diskon'       => $postData['diskon'],
             'tipe_diskon'  => $postData['tipe_diskon'],
+            'target_id_menu'=> empty($postData['target_id_menu']) ? null : $postData['target_id_menu'],
             'kuota'        => $postData['kuota'] ?: 0,
             'status'       => 'aktif'
         ]);
@@ -50,6 +53,7 @@ class VoucherAdmin extends BaseController
             'nama_voucher' => $postData['nama_voucher'],
             'diskon'       => $postData['diskon'],
             'tipe_diskon'  => $postData['tipe_diskon'],
+            'target_id_menu'=> empty($postData['target_id_menu']) ? null : $postData['target_id_menu'],
             'kuota'        => $postData['kuota'] ?: 0,
             'status'       => $postData['status']
         ]);

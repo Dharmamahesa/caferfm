@@ -15,7 +15,7 @@
         left: -80px;
         width: 300px;
         height: 300px;
-        background: radial-gradient(circle, rgba(255,180,100,0.15) 0%, transparent 70%);
+        background: radial-gradient(circle, rgba(88,204,2,0.12) 0%, transparent 70%);
         border-radius: 50%;
     }
     .lucky-bg::after {
@@ -25,7 +25,7 @@
         right: -60px;
         width: 250px;
         height: 250px;
-        background: radial-gradient(circle, rgba(255,123,28,0.1) 0%, transparent 70%);
+        background: radial-gradient(circle, rgba(28,176,246,0.08) 0%, transparent 70%);
         border-radius: 50%;
     }
     .wheel-wrapper {
@@ -34,9 +34,6 @@
         align-items: center;
         justify-content: center;
     }
-    #wheelCanvas {
-        transition: transform 4.5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-    }
     .pointer-arrow {
         position: absolute;
         top: -12px;
@@ -44,6 +41,17 @@
         transform: translateX(-50%);
         z-index: 30;
         filter: drop-shadow(0 3px 6px rgba(0,0,0,0.2));
+        transform-origin: center bottom;
+    }
+    @keyframes pointer-tick-left {
+        0% { transform: translateX(-50%) rotate(0deg); }
+        40% { transform: translateX(-50%) rotate(-12deg); }
+        100% { transform: translateX(-50%) rotate(0deg); }
+    }
+    @keyframes pointer-tick-right {
+        0% { transform: translateX(-50%) rotate(0deg); }
+        40% { transform: translateX(-50%) rotate(12deg); }
+        100% { transform: translateX(-50%) rotate(0deg); }
     }
     .spin-center-btn {
         position: absolute;
@@ -53,9 +61,9 @@
         width: 72px;
         height: 72px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #fff 0%, #fff5eb 100%);
+        background: linear-gradient(135deg, #fff 0%, #f0fff0 100%);
         border: 5px solid #58CC02;
-        box-shadow: 0 4px 15px rgba(255,123,28,0.3), inset 0 2px 4px rgba(255,255,255,0.8);
+        box-shadow: 0 4px 0 #4BB200, inset 0 2px 4px rgba(255,255,255,0.8);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -80,28 +88,28 @@
         background: linear-gradient(180deg, #a4e88a 0%, #7dd860 100%);
         border-radius: 50%;
         z-index: 0;
-        box-shadow: 0 8px 0 #e8944d;
+        box-shadow: 0 8px 0 #4BB200;
     }
     .chances-badge {
         position: absolute;
         bottom: -8px;
         left: 50%;
         transform: translateX(-50%);
-        background: linear-gradient(135deg, #58CC02, #ff5500);
+        background: linear-gradient(135deg, #58CC02, #4BB200);
         color: white;
         padding: 8px 24px;
         border-radius: 50px;
         font-weight: 900;
         font-size: 13px;
-        box-shadow: 0 4px 0 #3d9600, 0 6px 12px rgba(255,85,0,0.3);
+        box-shadow: 0 4px 0 #3d9600;
         border: 3px solid white;
         white-space: nowrap;
         z-index: 25;
     }
     .buy-card {
-        background: rgba(255,255,255,0.85);
+        background: rgba(255,255,255,0.9);
         backdrop-filter: blur(12px);
-        border: 1px solid rgba(255,255,255,0.6);
+        border: 2px solid #E5E5E5;
     }
     @keyframes float-subtle {
         0%, 100% { transform: translateY(0); }
@@ -109,42 +117,62 @@
     }
     .float-anim { animation: float-subtle 3s ease-in-out infinite; }
     @keyframes pulse-glow {
-        0%, 100% { box-shadow: 0 0 20px rgba(255,123,28,0.3); }
-        50% { box-shadow: 0 0 40px rgba(255,123,28,0.5); }
+        0%, 100% { box-shadow: 0 0 20px rgba(88,204,2,0.2); }
+        50% { box-shadow: 0 0 40px rgba(88,204,2,0.4); }
     }
     .glow-anim { animation: pulse-glow 2s ease-in-out infinite; }
+
+    /* Sound toggle button */
+    .sound-toggle {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 100;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: white;
+        border: 2px solid #E5E5E5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .sound-toggle:hover { border-color: #58CC02; }
 </style>
 
 <div class="lucky-bg min-h-screen px-4 py-6 flex flex-col items-center">
 
     <!-- Top Bar -->
     <div class="w-full max-w-md flex justify-between items-center mb-6 relative z-10">
-        <a href="<?= base_url('profil') ?>" class="w-10 h-10 bg-white/60 rounded-full flex items-center justify-center shadow-sm border border-[#58CC02]/20 backdrop-blur-sm hover:bg-white/80 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" /></svg>
+        <a href="<?= base_url('profil') ?>" class="w-10 h-10 bg-white/60 rounded-full flex items-center justify-center border-2 border-[#E5E5E5] hover:bg-white/80 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#4B4B4B]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" /></svg>
         </a>
-        <h2 class="text-lg font-extrabold text-[#4B4B4B] tracking-tight">Points Lucky Spin</h2>
+        <h2 class="text-lg font-extrabold text-[#100F3E] tracking-tight">Points Lucky Spin</h2>
         <div class="w-10 h-10"></div>
     </div>
 
     <!-- Title -->
     <div class="text-center mb-5 relative z-10">
-        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tighter leading-none" style="color: #58CC02; text-shadow: 2px 2px 0 #fff, 0 4px 8px rgba(255,123,28,0.15);">
+        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tighter leading-none" style="color: #58CC02; text-shadow: 2px 2px 0 #fff, 0 4px 8px rgba(88,204,2,0.15);">
             POINTS<br>LUCKY SPIN
         </h1>
     </div>
 
     <!-- Poin Display -->
-    <div class="mb-6 bg-white/70 backdrop-blur-md rounded-full px-5 py-2.5 inline-flex items-center gap-2 border border-white/50 shadow-sm relative z-10">
+    <div class="mb-6 bg-white/70 backdrop-blur-md rounded-full px-5 py-2.5 inline-flex items-center gap-2 border-2 border-[#E5E5E5] relative z-10">
         <span class="text-lg">💰</span>
-        <span class="text-sm font-bold text-gray-700">Poin Anda: <span class="text-[#58CC02] font-extrabold" id="poin-display"><?= $user['poin_loyalitas'] ?></span></span>
+        <span class="text-sm font-bold text-[#4B4B4B]">Poin Anda: <span class="text-[#58CC02] font-extrabold" id="poin-display"><?= $user['poin_loyalitas'] ?></span></span>
     </div>
 
     <!-- Daily Streak Info -->
-    <div class="mb-6 bg-white/70 backdrop-blur-md rounded-2xl px-5 py-3 inline-flex items-center gap-3 border border-[#58CC02]/20 shadow-sm relative z-10 float-anim">
+    <div class="mb-6 bg-white/70 backdrop-blur-md rounded-2xl px-5 py-3 inline-flex items-center gap-3 border-2 border-[#58CC02]/20 relative z-10 float-anim">
         <span class="text-2xl">🔥</span>
         <div>
             <p class="text-[10px] font-extrabold text-[#AFAFAF] uppercase tracking-widest">Daily Streak</p>
-            <p class="text-sm font-extrabold text-[#4B4B4B]"><?= $user['streak_count'] ?> Hari berturut-turut</p>
+            <p class="text-sm font-extrabold text-[#100F3E]"><?= $user['streak_count'] ?> Hari berturut-turut</p>
         </div>
     </div>
 
@@ -152,13 +180,13 @@
     <div class="wheel-wrapper mb-12 relative z-10" style="width: 320px; height: 320px;">
         <div class="pedestal"></div>
 
-        <!-- Pointer Arrow -->
-        <div class="pointer-arrow">
+        <!-- Pointer Arrow (at TOP / 12 o'clock) -->
+        <div class="pointer-arrow" id="pointerArrow">
             <svg width="36" height="44" viewBox="0 0 36 44">
                 <defs>
                     <linearGradient id="ptrGrad" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stop-color="#58CC02"/>
-                        <stop offset="100%" stop-color="#e55500"/>
+                        <stop offset="100%" stop-color="#4BB200"/>
                     </linearGradient>
                 </defs>
                 <path d="M18 44L2 18C2 9.16 9.16 2 18 2C26.84 2 34 9.16 34 18L18 44Z" fill="url(#ptrGrad)" stroke="white" stroke-width="2"/>
@@ -182,17 +210,17 @@
 
     <!-- Action Buttons -->
     <div class="w-full max-w-sm space-y-4 relative z-10">
-        <button id="spinBtn" class="w-full bg-gradient-to-r from-yellow-300 via-yellow-400 to-amber-400 hover:from-yellow-400 hover:to-amber-500 text-amber-900 font-extrabold py-4 rounded-3xl shadow-[0_6px_0_#b45309] active:shadow-[0_2px_0_#b45309] active:translate-y-1 transition-all text-xl border-4 border-white/80 tracking-wide">
+        <button id="spinBtn" class="w-full bg-[#58CC02] hover:bg-[#4BB200] text-white font-extrabold py-4 rounded-2xl shadow-[0_6px_0_#4BB200] active:shadow-[0_2px_0_#4BB200] active:translate-y-1 transition-all text-xl tracking-wide">
             🎰 SPIN NOW
         </button>
 
-        <div class="buy-card rounded-3xl p-5 shadow-sm">
+        <div class="buy-card rounded-2xl p-5">
             <div class="flex justify-between items-center mb-2">
                 <h3 class="font-extrabold text-[#58CC02] text-base">Beli Kesempatan Spin</h3>
                 <span class="text-xl">✨</span>
             </div>
             <p class="text-xs text-[#777] font-bold mb-4">Tukar <span class="text-[#58CC02] font-extrabold">50 poin</span> untuk 1 kesempatan spin</p>
-            <button id="buyBtn" class="w-full bg-gradient-to-r from-[#58CC02] to-[#ff5500] hover:from-[#4BB200] hover:to-[#cc4400] text-white font-extrabold py-3.5 rounded-2xl shadow-none shadow-[#58CC02]/20 active:scale-95 transition-all text-sm tracking-wide flex items-center justify-center gap-2">
+            <button id="buyBtn" class="w-full bg-[#1CB0F6] hover:bg-[#1899D6] text-white font-extrabold py-3.5 rounded-xl shadow-[0_4px_0_#1899D6] active:shadow-none active:translate-y-1 transition-all text-sm tracking-wide flex items-center justify-center gap-2">
                 <span class="text-lg">💎</span> BELI 50 POIN = 1 SPIN
             </button>
         </div>
@@ -201,19 +229,143 @@
     <div class="h-8"></div>
 </div>
 
+<!-- Sound Toggle -->
+<button class="sound-toggle" id="soundToggle" title="Toggle Suara">🔊</button>
+
 <script>
 (function() {
     // ============================================
-    // KONFIGURASI HADIAH (SINKRON DENGAN BACKEND)
+    // SOUND ENGINE (Web Audio API)
     // ============================================
-    const prizes = [
-        { id: 1, label: 'FREE AREN\nLATTE',  color: '#f7fdf7', textColor: '#4BB200', emoji: '☕' },
-        { id: 2, label: 'DISC 6K',           color: '#dcfadc', textColor: '#3d9600', emoji: '🎫' },
-        { id: 3, label: '100\nPOINTS',        color: '#f7fdf7', textColor: '#4BB200', emoji: '💰' },
-        { id: 4, label: '50\nPOINTS',         color: '#dcfadc', textColor: '#3d9600', emoji: '🪙' },
-        { id: 5, label: '30\nPOINTS',         color: '#f7fdf7', textColor: '#4BB200', emoji: '🪙' },
-        { id: 6, label: 'THANKS',            color: '#dcfadc', textColor: '#3d9600', emoji: '😭' },
-    ];
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    function getAudioCtx() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        return audioCtx;
+    }
+
+    // Tick sound — short click when crossing slice boundary
+    function playTick(volume = 0.3, pitch = 800) {
+        if (!soundEnabled) return;
+        try {
+            const ctx = getAudioCtx();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(pitch, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(pitch * 0.5, ctx.currentTime + 0.05);
+            
+            gain.gain.setValueAtTime(volume, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
+            
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + 0.06);
+        } catch(e) {}
+    }
+
+    // Spin start whoosh
+    function playWhoosh() {
+        if (!soundEnabled) return;
+        try {
+            const ctx = getAudioCtx();
+            const bufferSize = ctx.sampleRate * 0.4;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+            }
+            const source = ctx.createBufferSource();
+            source.buffer = buffer;
+            
+            const filter = ctx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(1000, ctx.currentTime);
+            filter.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.4);
+            filter.Q.value = 2;
+            
+            const gain = ctx.createGain();
+            gain.gain.setValueAtTime(0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+            
+            source.connect(filter);
+            filter.connect(gain);
+            gain.connect(ctx.destination);
+            source.start();
+        } catch(e) {}
+    }
+
+    // Win fanfare
+    function playWinSound() {
+        if (!soundEnabled) return;
+        try {
+            const ctx = getAudioCtx();
+            const notes = [523.25, 659.25, 783.99, 1046.50]; // C5 E5 G5 C6
+            notes.forEach((freq, i) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.12);
+                gain.gain.linearRampToValueAtTime(0.2, ctx.currentTime + i * 0.12 + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.4);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(ctx.currentTime + i * 0.12);
+                osc.stop(ctx.currentTime + i * 0.12 + 0.5);
+            });
+        } catch(e) {}
+    }
+
+    // Lose sound
+    function playLoseSound() {
+        if (!soundEnabled) return;
+        try {
+            const ctx = getAudioCtx();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(400, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.5);
+            gain.gain.setValueAtTime(0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.5);
+        } catch(e) {}
+    }
+
+    // Sound toggle
+    const soundToggleBtn = document.getElementById('soundToggle');
+    soundToggleBtn.addEventListener('click', () => {
+        soundEnabled = !soundEnabled;
+        soundToggleBtn.textContent = soundEnabled ? '🔊' : '🔇';
+        // Initialize AudioContext on user interaction
+        if (soundEnabled) getAudioCtx();
+    });
+
+    // ============================================
+    // KONFIGURASI HADIAH (DINAMIS DARI DATABASE)
+    // ============================================
+    const prizes = <?php
+        $prizesJs = array_values(array_map(fn($h) => [
+            'id'        => (int)$h['id'],
+            'label'     => strtoupper($h['nama_hadiah']),
+            'color'     => $h['warna_bg'],
+            'textColor' => $h['warna_text'],
+            'emoji'     => $h['emoji'],
+        ], $hadiah));
+        echo json_encode($prizesJs);
+    ?>;
+
+    const NUM_SLICES = prizes.length;
+    const SLICE_DEG = 360 / NUM_SLICES; // 60°
 
     const canvas = document.getElementById('wheelCanvas');
     const ctx = canvas.getContext('2d');
@@ -222,14 +374,16 @@
     const buyBtn = document.getElementById('buyBtn');
     const spinChancesEl = document.getElementById('spin-chances');
     const poinDisplay = document.getElementById('poin-display');
+    const pointerArrow = document.getElementById('pointerArrow');
 
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const radius = canvas.width / 2 - 4;
-    const sliceAngle = (2 * Math.PI) / prizes.length;
+    const outerRadius = canvas.width / 2 - 2;
+    const innerRadius = outerRadius - 6;
+    const sliceAngleRad = (2 * Math.PI) / NUM_SLICES;
 
     let isSpinning = false;
-    let currentDeg = 0;
+    let currentAngle = 0; // cumulative CSS rotation in degrees
 
     // ============================================
     // GAMBAR RODA DI CANVAS
@@ -237,20 +391,20 @@
     function drawWheel() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Outer ring
+        // Outer ring (green border)
         ctx.beginPath();
-        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        ctx.arc(centerX, centerY, outerRadius, 0, 2 * Math.PI);
         ctx.fillStyle = '#58CC02';
         ctx.fill();
 
-        // Inner circle (slightly smaller)
-        const innerRadius = radius - 6;
-
+        // Draw each slice
         prizes.forEach((prize, i) => {
-            const startAngle = i * sliceAngle - Math.PI / 2;
-            const endAngle = startAngle + sliceAngle;
+            // Slice i starts at top (12 o'clock) and goes CW
+            // In canvas math: 12 o'clock = -PI/2
+            const startAngle = i * sliceAngleRad - Math.PI / 2;
+            const endAngle = startAngle + sliceAngleRad;
 
-            // Draw slice
+            // Fill slice
             ctx.beginPath();
             ctx.moveTo(centerX, centerY);
             ctx.arc(centerX, centerY, innerRadius, startAngle, endAngle);
@@ -258,36 +412,38 @@
             ctx.fillStyle = prize.color;
             ctx.fill();
 
-            // Separator lines
+            // Separator line
             ctx.beginPath();
             ctx.moveTo(centerX, centerY);
-            ctx.arc(centerX, centerY, innerRadius, startAngle, startAngle);
-            ctx.lineTo(centerX + Math.cos(startAngle) * innerRadius, centerY + Math.sin(startAngle) * innerRadius);
-            ctx.strokeStyle = 'rgba(255,123,28,0.15)';
+            ctx.lineTo(
+                centerX + Math.cos(startAngle) * innerRadius,
+                centerY + Math.sin(startAngle) * innerRadius
+            );
+            ctx.strokeStyle = 'rgba(88,204,2,0.25)';
             ctx.lineWidth = 1.5;
             ctx.stroke();
 
-            // Draw text
+            // Draw text + emoji at the mid-angle
             ctx.save();
             ctx.translate(centerX, centerY);
-            const textAngle = startAngle + sliceAngle / 2;
-            ctx.rotate(textAngle);
+            const midAngle = startAngle + sliceAngleRad / 2;
+            ctx.rotate(midAngle);
 
-            // Emoji (closer to edge)
+            // Emoji
             ctx.font = '20px serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText(prize.emoji, innerRadius * 0.72, 0);
+            ctx.fillText(prize.emoji, innerRadius * 0.74, 0);
 
-            // Label text (closer to center)
-            ctx.font = 'bold 10px Inter, sans-serif';
+            // Label text
+            ctx.font = 'bold 10px Nunito, sans-serif';
             ctx.fillStyle = prize.textColor;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
             const lines = prize.label.split('\n');
             const lineHeight = 12;
-            const textDist = innerRadius * 0.46;
+            const textDist = innerRadius * 0.45;
             lines.forEach((line, li) => {
                 const yOff = (li - (lines.length - 1) / 2) * lineHeight;
                 ctx.fillText(line, textDist, yOff);
@@ -296,14 +452,15 @@
             ctx.restore();
         });
 
-        // Small decorative dots on outer ring
-        for (let i = 0; i < prizes.length * 3; i++) {
-            const dotAngle = (i / (prizes.length * 3)) * 2 * Math.PI;
-            const dx = centerX + Math.cos(dotAngle) * (radius - 3);
-            const dy = centerY + Math.sin(dotAngle) * (radius - 3);
+        // Decorative dots
+        const numDots = NUM_SLICES * 4;
+        for (let i = 0; i < numDots; i++) {
+            const dotAngle = (i / numDots) * 2 * Math.PI;
+            const dx = centerX + Math.cos(dotAngle) * (outerRadius - 3);
+            const dy = centerY + Math.sin(dotAngle) * (outerRadius - 3);
             ctx.beginPath();
-            ctx.arc(dx, dy, 2, 0, 2 * Math.PI);
-            ctx.fillStyle = i % 2 === 0 ? '#fff' : '#ffe0c0';
+            ctx.arc(dx, dy, 1.8, 0, 2 * Math.PI);
+            ctx.fillStyle = i % 2 === 0 ? '#fff' : '#c8f7b0';
             ctx.fill();
         }
     }
@@ -311,36 +468,142 @@
     drawWheel();
 
     // ============================================
-    // LOGIKA SPIN
+    // SPIN ANGLE CALCULATION
     // ============================================
-
-    // Pointer ada di ATAS (jam 12). 
-    // Slice 0 dimulai dari jam 12 (karena kita offset -PI/2 saat menggambar).
-    // Jadi jika roda tidak diputar (0°), pointer menunjuk ke tengah slice 0.
     // 
-    // Untuk menunjuk ke slice i, kita perlu memutar roda sebesar:
-    //   -(i * sliceAngle_deg + sliceAngle_deg/2)
-    // ditambah kelipatan 360 untuk banyak putaran.
+    // GEOMETRY EXPLANATION:
+    // --------------------
+    // The pointer is FIXED at the top (12 o'clock).
+    // The canvas is ROTATED via CSS rotate(X deg) which rotates CLOCKWISE.
     //
-    // sliceAngle_deg = 360 / 6 = 60°
-    // 
-    // Mapping:
-    //   Prize id=1 (slice 0): target = 0° (sudah di atas)
-    //   Prize id=2 (slice 1): target = -60°  → equivalent to 300°
-    //   Prize id=3 (slice 2): target = -120° → equivalent to 240°
-    //   Prize id=4 (slice 3): target = -180° → equivalent to 180°
-    //   Prize id=5 (slice 4): target = -240° → equivalent to 120°
-    //   Prize id=6 (slice 5): target = -300° → equivalent to 60°
-
-    function getTargetDeg(prizeId) {
+    // On the canvas, slices are drawn starting from 12 o'clock going CW:
+    //   Slice 0 occupies 0°-60° CW from 12
+    //   Slice 1 occupies 60°-120° CW from 12
+    //   ...etc
+    //
+    // When CSS rotates the canvas CW by X°, the canvas point that
+    // was at position (360 - X)° CW from 12 is now under the pointer.
+    //
+    // So: canvasPositionAtPointer = (360 - X%360) % 360
+    // And: sliceAtPointer = floor(canvasPositionAtPointer / SLICE_DEG)
+    //
+    // To land on slice s (center):
+    //   canvasPositionAtPointer = s * SLICE_DEG + SLICE_DEG/2
+    //   (360 - X%360) % 360 = s * SLICE_DEG + SLICE_DEG/2
+    //   X%360 = (360 - (s * SLICE_DEG + SLICE_DEG/2)) % 360
+    //
+    function computeFinalAngle(prizeId) {
         const sliceIndex = prizeId - 1;
-        const sliceDeg = 360 / prizes.length;
-        // Negative rotation brings slice under pointer
-        return 360 - (sliceIndex * sliceDeg);
+        
+        // Center of the target slice in canvas coordinates (degrees CW from 12 o'clock)
+        const sliceCenter = sliceIndex * SLICE_DEG + SLICE_DEG / 2;
+        
+        // Required CSS rotation remainder to point at that slice center
+        // X%360 = (360 - sliceCenter) % 360
+        const targetRemainder = ((360 - sliceCenter) % 360 + 360) % 360;
+        
+        // Small jitter so it doesn't always land dead center (±35% of half-slice)
+        const jitter = (Math.random() - 0.5) * SLICE_DEG * 0.35;
+        
+        // Multiple full rotations for dramatic effect
+        const minSpins = 7;
+        const extraSpins = Math.floor(Math.random() * 3); // 0-2 extra
+        const totalFullRotation = (minSpins + extraSpins) * 360;
+        
+        // Calculate delta from current position to target
+        const currentRemainder = ((currentAngle % 360) + 360) % 360;
+        let delta = targetRemainder - currentRemainder + jitter;
+        if (delta < 0) delta += 360;
+        
+        return currentAngle + totalFullRotation + delta;
     }
 
+    // Verify function: what slice is at the pointer for a given rotation?
+    function getSliceAtPointer(rotationDeg) {
+        const canvasPos = ((360 - (rotationDeg % 360)) % 360 + 360) % 360;
+        return Math.floor(canvasPos / SLICE_DEG) % NUM_SLICES;
+    }
+
+    // ============================================
+    // ANIMATE SPIN — requestAnimationFrame with physics
+    // ============================================
+    function animateSpin(startAngle, endAngle, duration, onComplete) {
+        const startTime = performance.now();
+        const totalDelta = endAngle - startAngle;
+        
+        let prevSliceIndex = -1;
+        let tickAlternate = false;
+
+        // Custom easing: fast start, dramatic slowdown at end
+        function easeOutQuint(t) {
+            return 1 - Math.pow(1 - t, 5);
+        }
+
+        function frame(now) {
+            const elapsed = now - startTime;
+            let t = Math.min(elapsed / duration, 1);
+            
+            const easedT = easeOutQuint(t);
+            const angle = startAngle + totalDelta * easedT;
+            
+            // Apply rotation
+            canvas.style.transform = `rotate(${angle}deg)`;
+
+            // Detect slice boundary crossing for tick sound + pointer animation
+            const normalizedAngle = ((angle % 360) + 360) % 360;
+            const currentSliceIndex = Math.floor(normalizedAngle / SLICE_DEG) % NUM_SLICES;
+            
+            if (currentSliceIndex !== prevSliceIndex && prevSliceIndex !== -1) {
+                // Calculate current speed (0 at end, 1 at start)
+                const speed = 1 - t;
+                
+                // Tick sound — gets louder & lower pitch as wheel slows
+                const tickVolume = Math.min(0.1 + (1 - speed) * 0.35, 0.4);
+                const tickPitch = 600 + speed * 600; // fast=1200Hz, slow=600Hz
+                playTick(tickVolume, tickPitch);
+                
+                // Pointer tick animation — only visible when slow enough
+                if (speed < 0.5) {
+                    tickAlternate = !tickAlternate;
+                    pointerArrow.style.animation = 'none';
+                    void pointerArrow.offsetWidth; // force reflow
+                    const dur = Math.max(0.08, 0.05 + (1 - speed) * 0.15);
+                    pointerArrow.style.animation = `${tickAlternate ? 'pointer-tick-left' : 'pointer-tick-right'} ${dur}s ease-out`;
+                }
+            }
+            prevSliceIndex = currentSliceIndex;
+
+            if (t < 1) {
+                requestAnimationFrame(frame);
+            } else {
+                // Ensure exact final position
+                canvas.style.transform = `rotate(${endAngle}deg)`;
+                currentAngle = endAngle;
+                
+                // One last strong tick
+                playTick(0.5, 500);
+                
+                setTimeout(() => {
+                    pointerArrow.style.animation = '';
+                }, 300);
+                
+                if (onComplete) onComplete();
+            }
+        }
+
+        // Start whoosh sound
+        playWhoosh();
+        requestAnimationFrame(frame);
+    }
+
+    // ============================================
+    // DO SPIN
+    // ============================================
     async function doSpin() {
         if (isSpinning) return;
+
+        // Initialize audio context on user gesture
+        getAudioCtx();
 
         let chances = parseInt(spinChancesEl.innerText);
         if (chances <= 0) {
@@ -351,6 +614,7 @@
         isSpinning = true;
         spinBtn.classList.add('opacity-50', 'cursor-not-allowed');
         canvas.classList.remove('glow-anim');
+        canvas.style.transition = 'none';
 
         try {
             const res = await fetch('<?= base_url('lucky_spin/proses') ?>', {
@@ -362,40 +626,43 @@
             if (data.status === 'success') {
                 spinChancesEl.innerText = chances - 1;
 
-                const targetBase = getTargetDeg(data.prize_id);
-                // Add random offset within half-slice so it doesn't always land dead center
-                const halfSlice = (360 / prizes.length) / 2;
-                const randomOffset = (Math.random() - 0.5) * halfSlice * 0.6;
-                const fullSpins = 360 * 6; // 6 full rotations
-                const finalDeg = currentDeg + fullSpins + (targetBase - (currentDeg % 360)) + randomOffset;
+                const finalAngle = computeFinalAngle(data.prize_id);
+                
+                // DEBUG: verify the angle math
+                const landedSlice = getSliceAtPointer(finalAngle);
+                console.log(`Prize ID: ${data.prize_id}, Target Slice: ${data.prize_id - 1}, Landed Slice: ${landedSlice}, Angle: ${finalAngle.toFixed(1)}°`);
+                
+                // Spin duration: 5.5 - 7 seconds
+                const spinDuration = 5500 + Math.random() * 1500;
 
-                canvas.style.transform = `rotate(${finalDeg}deg)`;
-                currentDeg = finalDeg;
-
-                setTimeout(() => {
+                animateSpin(currentAngle, finalAngle, spinDuration, () => {
                     isSpinning = false;
                     spinBtn.classList.remove('opacity-50', 'cursor-not-allowed');
                     canvas.classList.add('glow-anim');
 
-                    if (data.prize_type === 'zonk') {
-                        Swal.fire({ icon: 'info', title: 'Yah, belum beruntung 😅', text: 'Terima kasih sudah mencoba. Coba lagi!', confirmButtonColor: '#58CC02' });
-                    } else {
-                        let desc = '';
-                        if (data.prize_type === 'poin') {
-                            const addPoin = parseInt(data.prize_name.replace(/[^0-9]/g, ''));
-                            poinDisplay.innerText = parseInt(poinDisplay.innerText) + addPoin;
-                            desc = `+${addPoin} Poin telah ditambahkan ke akun Anda!`;
+                    setTimeout(() => {
+                        if (data.prize_type === 'zonk') {
+                            playLoseSound();
+                            Swal.fire({ icon: 'info', title: 'Yah, belum beruntung 😅', text: 'Terima kasih sudah mencoba. Coba lagi!', confirmButtonColor: '#58CC02' });
                         } else {
-                            desc = `Voucher "${data.prize_name}" sudah masuk ke daftar Voucher Anda!`;
+                            playWinSound();
+                            let desc = '';
+                            if (data.prize_type === 'poin') {
+                                const addPoin = parseInt(data.prize_name.replace(/[^0-9]/g, ''));
+                                poinDisplay.innerText = parseInt(poinDisplay.innerText) + addPoin;
+                                desc = `+${addPoin} Poin telah ditambahkan ke akun Anda!`;
+                            } else {
+                                desc = `Voucher "${data.prize_name}" sudah masuk ke daftar Voucher Anda!`;
+                            }
+                            Swal.fire({
+                                icon: 'success',
+                                title: '🎉 Selamat!',
+                                html: `<div class="font-bold text-lg text-[#58CC02] mb-1">${data.prize_name}</div><p class="text-[#777] text-sm">${desc}</p>`,
+                                confirmButtonColor: '#58CC02'
+                            });
                         }
-                        Swal.fire({
-                            icon: 'success',
-                            title: '🎉 Selamat!',
-                            html: `<div class="font-bold text-lg text-[#58CC02] mb-1">${data.prize_name}</div><p class="text-[#777] text-sm">${desc}</p>`,
-                            confirmButtonColor: '#58CC02'
-                        });
-                    }
-                }, 4800);
+                    }, 500);
+                });
 
             } else {
                 isSpinning = false;

@@ -208,7 +208,7 @@
                     'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
-                body: JSON.stringify({ kode: kode })
+                body: JSON.stringify({ kode: kode, cart: cart })
             });
 
             const result = await response.json();
@@ -220,11 +220,13 @@
                     idVoucherGlobalApplied = result.id_voucher_global;
                     idVoucherApplied = null;
                 } else {
-                    idVoucherApplied = result.id_voucher;
+                    idVoucherApplied = result.id_pelanggan_voucher;
                     idVoucherGlobalApplied = null;
                 }
                 
-                if (result.tipe === 'persen') {
+                if (result.exact_discount !== undefined && result.exact_discount !== null) {
+                    discountAmount = result.exact_discount;
+                } else if (result.tipe === 'persen') {
                     discountAmount = grandTotal * (result.diskon / 100);
                 } else {
                     discountAmount = result.diskon;

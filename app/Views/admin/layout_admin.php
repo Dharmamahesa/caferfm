@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Admin Panel - Kafe Gamified') ?></title>
+    <title><?= esc($title ?? 'Admin Panel - Toko Kopi Jaya Lestari') ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="<?= base_url('css/duolingo-theme.css') ?>" rel="stylesheet">
@@ -28,8 +28,8 @@
                     <span class="text-xl font-black text-white">K</span>
                 </div>
                 <div>
-                    <h2 class="text-xl font-black tracking-tight leading-none text-white font-display group-hover:text-[#58CC02] transition-colors">KAFE</h2>
-                    <span class="text-[10px] font-bold tracking-widest text-[#58CC02] uppercase">Gamified</span>
+                    <h2 class="text-xl font-black tracking-tight leading-none text-white font-display group-hover:text-[#58CC02] transition-colors">TOKO KOPI</h2>
+                    <span class="text-[10px] font-bold tracking-widest text-[#58CC02] uppercase">Jaya Lestari</span>
                 </div>
             </a>
             <!-- Close Button for Mobile -->
@@ -40,25 +40,32 @@
             </button>
         </div>
         
-        <!-- Sidebar Navigation -->
         <nav class="flex-1 p-4 space-y-1 overflow-y-auto no-scrollbar">
-            <?php $uri = service('uri')->getSegment(2); ?>
+            <?php 
+                $uri = service('uri')->getSegment(2);
+                $adminRole = session()->get('admin_role') ?? 'kasir';
+            ?>
             
+            <?php if (in_array($adminRole, ['super_admin', 'manajer'])): ?>
             <a href="<?= base_url('admin/dashboard') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all duration-200 <?= ($uri == 'dashboard' || empty($uri)) ? 'bg-[#58CC02] text-white shadow-[0_3px_0_#4BB200]' : 'text-white/50 hover:bg-white/5 hover:text-white' ?>">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
                 Dashboard
             </a>
+            <?php endif; ?>
             
             <p class="px-4 pt-5 pb-2 text-[10px] font-extrabold text-white/30 uppercase tracking-[2px]">Operasional</p>
             
+            <?php if (in_array($adminRole, ['super_admin', 'kasir'])): ?>
             <a href="<?= base_url('admin/kasir') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all duration-200 <?= ($uri == 'kasir') ? 'bg-white/10 text-white border border-white/5' : 'text-white/50 hover:bg-white/5 hover:text-white' ?>">
                 <span class="text-lg">💳</span> Kasir
             </a>
+            <?php endif; ?>
             
             <a href="<?= base_url('admin/dapur') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all duration-200 <?= ($uri == 'dapur') ? 'bg-white/10 text-white border border-white/5' : 'text-white/50 hover:bg-white/5 hover:text-white' ?>">
                 <span class="text-lg">👨‍🍳</span> Dapur (Kitchen)
             </a>
             
+            <?php if (in_array($adminRole, ['super_admin', 'manajer'])): ?>
             <a href="<?= base_url('admin/menu') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all duration-200 <?= ($uri == 'menu') ? 'bg-white/10 text-white border border-white/5' : 'text-white/50 hover:bg-white/5 hover:text-white' ?>">
                 <span class="text-lg">🍔</span> Manajemen Menu
             </a>
@@ -66,7 +73,17 @@
             <a href="<?= base_url('admin/riwayat') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all duration-200 <?= ($uri == 'riwayat') ? 'bg-white/10 text-white border border-white/5' : 'text-white/50 hover:bg-white/5 hover:text-white' ?>">
                 <span class="text-lg">🧾</span> Riwayat Transaksi
             </a>
+
+            <a href="<?= base_url('admin/laporan') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all duration-200 <?= ($uri == 'laporan') ? 'bg-white/10 text-white border border-white/5' : 'text-white/50 hover:bg-white/5 hover:text-white' ?>">
+                <span class="text-lg">📈</span> Laporan Penjualan
+            </a>
+            <?php elseif ($adminRole == 'kasir'): ?>
+            <a href="<?= base_url('admin/riwayat') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all duration-200 <?= ($uri == 'riwayat') ? 'bg-white/10 text-white border border-white/5' : 'text-white/50 hover:bg-white/5 hover:text-white' ?>">
+                <span class="text-lg">🧾</span> Riwayat Transaksi
+            </a>
+            <?php endif; ?>
             
+            <?php if (in_array($adminRole, ['super_admin', 'manajer'])): ?>
             <p class="px-4 pt-5 pb-2 text-[10px] font-extrabold text-white/30 uppercase tracking-[2px]">Gamifikasi & CRM</p>
             
             <a href="<?= base_url('admin/rfm') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all duration-200 <?= ($uri == 'rfm') ? 'bg-white/10 text-white border border-white/5' : 'text-white/50 hover:bg-white/5 hover:text-white' ?>">
@@ -89,6 +106,12 @@
                 <span class="text-lg">🎟️</span> Manajemen Voucher
             </a>
 
+            <a href="<?= base_url('admin/spin') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all duration-200 <?= ($uri == 'spin') ? 'bg-white/10 text-white border border-white/5' : 'text-white/50 hover:bg-white/5 hover:text-white' ?>">
+                <span class="text-lg">🎰</span> Pengaturan Spin
+            </a>
+            <?php endif; ?>
+
+            <?php if (in_array($adminRole, ['super_admin', 'manajer'])): ?>
             <p class="px-4 pt-5 pb-2 text-[10px] font-extrabold text-white/30 uppercase tracking-[2px]">Sistem & Utility</p>
 
             <a href="<?= base_url('admin/qr_meja') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all duration-200 <?= ($uri == 'qr_meja') ? 'bg-white/10 text-white border border-white/5' : 'text-white/50 hover:bg-white/5 hover:text-white' ?>">
@@ -102,17 +125,44 @@
             <a href="<?= base_url('admin/pengaturan') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all duration-200 <?= ($uri == 'pengaturan') ? 'bg-white/10 text-white border border-white/5' : 'text-white/50 hover:bg-white/5 hover:text-white' ?>">
                 <span class="text-lg">⚙️</span> Pengaturan
             </a>
+            <?php endif; ?>
+
+            <?php if ($adminRole === 'super_admin'): ?>
+            <a href="<?= base_url('admin/users') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all duration-200 <?= ($uri == 'users') ? 'bg-[#a855f7]/20 text-[#d8b4fe] border border-[#a855f7]/30' : 'text-white/50 hover:bg-white/5 hover:text-white' ?>">
+                <span class="text-lg">👥</span> Kelola Admin
+            </a>
+            <?php endif; ?>
         </nav>
 
         <!-- Sidebar Footer -->
         <div class="p-4 border-t border-white/10 bg-black/20">
-            <div class="flex items-center gap-3 mb-4 px-2">
+            <div class="flex items-center gap-3 mb-3 px-2">
                 <div class="w-10 h-10 rounded-full bg-[#58CC02] flex items-center justify-center text-white font-black shadow-[0_2px_0_#4BB200]">
                     <?= substr(session()->get('nama_admin') ?? 'A', 0, 1) ?>
                 </div>
-                <div>
+                <div class="flex-1 min-w-0">
                     <p class="text-[10px] text-white/40 uppercase font-bold tracking-wider">Admin Aktif</p>
-                    <p class="text-sm font-bold text-white truncate max-w-[150px]"><?= esc(session()->get('nama_admin')) ?></p>
+                    <p class="text-sm font-bold text-white truncate"><?= esc(session()->get('nama_admin')) ?></p>
+                    <?php
+                        $role = session()->get('admin_role') ?? 'kasir';
+                        $roleColors = [
+                            'super_admin' => 'bg-[#a855f7]/20 text-[#d8b4fe] border-[#a855f7]/40',
+                            'manajer'     => 'bg-blue-500/20 text-blue-300 border-blue-500/40',
+                            'kasir'       => 'bg-[#58CC02]/20 text-[#86efac] border-[#58CC02]/40',
+                            'koki'        => 'bg-orange-500/20 text-orange-300 border-orange-500/40',
+                        ];
+                        $roleLabels = [
+                            'super_admin' => '👑 Super Admin',
+                            'manajer'     => '📋 Manajer',
+                            'kasir'       => '💳 Kasir',
+                            'koki'        => '👨‍🍳 Koki',
+                        ];
+                        $colorClass = $roleColors[$role] ?? 'bg-white/10 text-white/50 border-white/20';
+                        $roleLabel  = $roleLabels[$role] ?? $role;
+                    ?>
+                    <span class="inline-block mt-1 text-[9px] font-bold px-2 py-0.5 rounded-full border <?= $colorClass ?>">
+                        <?= $roleLabel ?>
+                    </span>
                 </div>
             </div>
             <a href="<?= base_url('admin/logout') ?>" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-[#FF4B4B]/10 text-[#FF4B4B] hover:bg-[#FF4B4B] hover:text-white rounded-xl font-bold transition-all text-xs uppercase tracking-widest border border-[#FF4B4B]/20 group">

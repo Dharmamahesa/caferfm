@@ -19,6 +19,7 @@ class MenuModel extends Model
     // 4. (SANGAT PENTING) Tentukan kolom apa saja yang BOLEH diisi secara massal
     // Kolom id_menu tidak perlu dimasukkan karena Auto Increment
     protected $allowedFields = [
+        'kode_item',
         'nama_item', 
         'kategori', 
         'harga', 

@@ -27,12 +27,29 @@ class AdminAuth extends BaseController
         if ($admin) {
             // Verifikasi password Hash
             if (password_verify($password, $admin['password'])) {
+                // Cek apakah akun masih aktif
+                if (isset($admin['is_active']) && $admin['is_active'] == 0) {
+                    session()->setFlashdata('error', 'Akun Anda telah dinonaktifkan. Hubungi Super Admin.');
+                    return redirect()->to(base_url('admin/login'));
+                }
+
+                $role = $admin['role'] ?? 'kasir';
+
                 session()->set([
                     'id_admin'        => $admin['id_admin'],
                     'nama_admin'      => $admin['nama_admin'],
+                    'admin_role'      => $role,
                     'isAdminLoggedIn' => true
                 ]);
-                return redirect()->to(base_url('admin/dapur'));
+
+                // Redirect sesuai role
+                $redirectMap = [
+                    'super_admin' => base_url('admin/dashboard'),
+                    'manajer'     => base_url('admin/dashboard'),
+                    'kasir'       => base_url('admin/kasir'),
+                    'koki'        => base_url('admin/dapur'),
+                ];
+                return redirect()->to($redirectMap[$role] ?? base_url('admin/dapur'));
             } else {
                 session()->setFlashdata('error', 'Password Admin salah!');
                 return redirect()->to(base_url('admin/login'));
@@ -45,7 +62,7 @@ class AdminAuth extends BaseController
 
     public function logout()
     {
-        session()->remove(['id_admin', 'nama_admin', 'isAdminLoggedIn']);
+        session()->remove(['id_admin', 'nama_admin', 'admin_role', 'isAdminLoggedIn']);
         session()->setFlashdata('sukses', 'Berhasil keluar dari sistem Admin.');
         return redirect()->to(base_url('admin/login'));
     }
@@ -62,13 +79,15 @@ class AdminAuth extends BaseController
             return "Akun admin sudah ada. Hapus file atau rute ini demi keamanan.";
         }
 
-        // Buat akun admin default
+        // Buat akun admin default sebagai Super Admin
         $adminModel->insert([
             'username'   => 'admin',
-            'password'   => password_hash('admin123', PASSWORD_BCRYPT), // Hash Otomatis
-            'nama_admin' => 'Super Admin'
+            'password'   => password_hash('admin123', PASSWORD_BCRYPT),
+            'nama_admin' => 'Super Admin',
+            'role'       => 'super_admin',
+            'is_active'  => 1
         ]);
 
-        return "Akun Admin berhasil dibuat! Username: admin | Password: admin123";
+        return "Akun Admin berhasil dibuat! Username: admin | Password: admin123 | Role: Super Admin";
     }
 }

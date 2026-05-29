@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Kafe Gamified') ?></title>
+    <title><?= esc($title ?? 'Toko Kopi Jaya Lestari') ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="<?= base_url('css/duolingo-theme.css') ?>" rel="stylesheet">
@@ -58,8 +58,8 @@
             <div class="w-20 h-20 bg-[#58CC02] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-[0_4px_0_#4BB200]">
                 <span class="text-4xl">☕</span>
             </div>
-            <h2 class="text-3xl font-black tracking-tight mb-2 font-display">Kafe</h2>
-            <p class="text-xs font-bold tracking-widest uppercase text-[#58CC02] mb-8">Gamified Experience</p>
+            <h2 class="text-3xl font-black tracking-tight mb-2 font-display">Toko Kopi</h2>
+            <p class="text-xs font-bold tracking-widest uppercase text-[#58CC02] mb-8">Jaya Lestari Reward</p>
             
             <div class="space-y-4 text-left w-full">
                 <div class="flex items-center gap-3 bg-white/6 border-2 border-white/8 rounded-2xl p-4">
@@ -85,7 +85,7 @@
                 </div>
             </div>
 
-            <p class="mt-10 text-xs text-white/30 font-semibold">© <?= date('Y') ?> Kafe Gamified</p>
+            <p class="mt-10 text-xs text-white/30 font-semibold">&copy; <?= date('Y') ?> Toko Kopi Jaya Lestari</p>
         </div>
     </aside>
 

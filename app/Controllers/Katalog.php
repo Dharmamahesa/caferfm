@@ -24,7 +24,7 @@ class Katalog extends BaseController
 
         // 3. Menarik Data Menu dari Database berdasarkan Kategori
         $data = [
-            'title'   => 'Katalog Menu - Kafe Gamified',
+            'title'   => 'Katalog Menu - Toko Kopi Jaya Lestari',
             'no_meja' => $no_meja,
             // Kita gunakan method getMenuByKategori() yang kita buat di Model tadi
             'makanan' => $menuModel->getMenuByKategori('makanan'),

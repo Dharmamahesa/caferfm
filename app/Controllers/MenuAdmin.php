@@ -17,7 +17,7 @@ class MenuAdmin extends BaseController
     public function index()
     {
         $data = [
-            'title' => 'Manajemen Menu - Kafe Gamified',
+            'title' => 'Manajemen Menu - Toko Kopi Jaya Lestari',
             'menu'  => $this->menuModel->orderBy('kategori', 'ASC')->findAll()
         ];
         return view('admin/v_menu_index', $data);
@@ -45,6 +45,7 @@ class MenuAdmin extends BaseController
 
         // 3. Simpan ke database
         $this->menuModel->insert([
+            'kode_item' => $this->request->getPost('kode_item'),
             'nama_item' => $this->request->getPost('nama_item'),
             'kategori'  => $this->request->getPost('kategori'),
             'harga'     => $this->request->getPost('harga'),
@@ -84,6 +85,7 @@ class MenuAdmin extends BaseController
         }
 
         $this->menuModel->update($id, [
+            'kode_item' => $this->request->getPost('kode_item'),
             'nama_item' => $this->request->getPost('nama_item'),
             'kategori'  => $this->request->getPost('kategori'),
             'harga'     => $this->request->getPost('harga'),

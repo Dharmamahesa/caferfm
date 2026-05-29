@@ -21,7 +21,13 @@
         <?= session()->getFlashdata('sukses') ?>
     </div>
 <?php endif; ?>
+<?php if(session()->getFlashdata('error')): ?>
+    <div class="bg-red-50 text-red-700 p-4 rounded-xl mb-6 font-bold border border-red-200 animate-fade-in-up">
+        <?= session()->getFlashdata('error') ?>
+    </div>
+<?php endif; ?>
 
+<!-- Desktop Table -->
 <div class="bg-white rounded-2xl shadow-sm border border-[#E5E5E5] overflow-hidden animate-fade-in-up hidden md:block">
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
@@ -30,25 +36,26 @@
                     <th class="px-6 py-4">Ikon & Nama Reward</th>
                     <th class="px-6 py-4">Deskripsi</th>
                     <th class="px-6 py-4">Harga Poin</th>
-                    <th class="px-6 py-4">Tipe & Nominal Diskon</th>
+                    <th class="px-6 py-4">Tipe & Nilai Diskon</th>
+                    <th class="px-6 py-4">Item Khusus</th>
                     <th class="px-6 py-4 text-right">Aksi</th>
                 </tr>
             </thead>
             <tbody class="text-sm">
                 <?php if(empty($reward)): ?>
-                    <tr><td colspan="5" class="px-6 py-10 text-center text-[#AFAFAF] font-bold">Belum ada item di katalog reward.</td></tr>
+                    <tr><td colspan="6" class="px-6 py-10 text-center text-[#AFAFAF] font-bold">Belum ada item di katalog reward.</td></tr>
                 <?php else: ?>
                     <?php foreach($reward as $r): ?>
                     <tr class="border-b border-gray-50 hover:bg-[#f7f7f7] transition-colors">
-                        <td class="px-6 py-4 flex items-center gap-3">
-                            <div class="w-10 h-10 bg-purple-50 flex items-center justify-center rounded-xl text-xl shadow-inner border border-purple-100">
-                                <?= esc($r['ikon']) ?>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-purple-50 flex items-center justify-center rounded-xl text-xl shadow-inner border border-purple-100 flex-shrink-0">
+                                    <?= esc($r['ikon']) ?>
+                                </div>
+                                <span class="font-extrabold text-[#4B4B4B] text-base"><?= esc($r['nama_reward']) ?></span>
                             </div>
-                            <span class="font-extrabold text-[#4B4B4B] text-base"><?= esc($r['nama_reward']) ?></span>
                         </td>
-                        <td class="px-6 py-4 text-[#777] font-medium max-w-xs truncate">
-                            <?= esc($r['deskripsi']) ?>
-                        </td>
+                        <td class="px-6 py-4 text-[#777] font-medium max-w-xs truncate"><?= esc($r['deskripsi']) ?></td>
                         <td class="px-6 py-4">
                             <span class="bg-[#58CC02]/10 text-[#58CC02] px-3 py-1 rounded-full text-xs font-extrabold shadow-sm flex items-center gap-1 w-max">
                                 <?= number_format($r['poin_dibutuhkan'], 0, ',', '.') ?> Pts
@@ -63,8 +70,21 @@
                                 <span class="font-bold text-[#4B4B4B]">Gratis Produk</span>
                             <?php endif; ?>
                         </td>
+                        <td class="px-6 py-4">
+                            <?php if(!empty($r['nama_item_target'])): ?>
+                                <span class="bg-purple-50 text-purple-600 border border-purple-100 px-2 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 w-max">
+                                    🍵 <?= esc($r['kode_item_target'] ? '['.$r['kode_item_target'].'] ' : '') . esc($r['nama_item_target']) ?>
+                                </span>
+                            <?php else: ?>
+                                <span class="text-[#AFAFAF] text-xs font-bold">Semua Menu</span>
+                            <?php endif; ?>
+                        </td>
                         <td class="px-6 py-4 text-right">
-                            <a href="<?= base_url('admin/katalog_reward/hapus/' . $r['id_reward']) ?>" onclick="return confirm('Hapus item reward ini dari katalog?')" class="text-[#FF4B4B] hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm inline-block">Hapus</a>
+                            <div class="flex items-center justify-end gap-2">
+                                <button onclick="bukaModalEditReward(<?= htmlspecialchars(json_encode($r)) ?>)"
+                                    class="text-purple-600 hover:text-purple-800 bg-purple-50 hover:bg-purple-100 px-3 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm">Edit</button>
+                                <a href="<?= base_url('admin/katalog_reward/hapus/' . $r['id_reward']) ?>" onclick="return confirm('Hapus item reward ini dari katalog?')" class="text-[#FF4B4B] hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm inline-block">Hapus</a>
+                            </div>
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -92,6 +112,11 @@
                     <div>
                         <p class="font-extrabold text-[#4B4B4B]"><?= esc($r['nama_reward']) ?></p>
                         <p class="text-xs text-[#777] mt-0.5"><?= esc($r['deskripsi']) ?></p>
+                        <?php if(!empty($r['nama_item_target'])): ?>
+                            <span class="bg-purple-50 text-purple-600 border border-purple-100 px-2 py-0.5 rounded-lg text-[10px] font-bold mt-1 inline-block">
+                                🍵 <?= esc($r['nama_item_target']) ?>
+                            </span>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -104,16 +129,20 @@
                         <?php if($r['tipe_diskon'] == 'nominal'): ?>Rp <?= number_format($r['nominal_diskon'], 0, ',', '.') ?><?php elseif($r['tipe_diskon'] == 'persen'): ?><?= $r['nominal_diskon'] ?>%<?php else: ?>Gratis Produk<?php endif; ?>
                     </span>
                 </div>
-                <a href="<?= base_url('admin/katalog_reward/hapus/' . $r['id_reward']) ?>" onclick="return confirm('Hapus item reward ini?')" class="bg-red-50 text-[#FF4B4B] hover:bg-[#FF4B4B] hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors">Hapus</a>
+                <div class="flex gap-2">
+                    <button onclick="bukaModalEditReward(<?= htmlspecialchars(json_encode($r)) ?>)"
+                        class="bg-purple-50 text-purple-600 hover:bg-purple-100 px-3 py-2 rounded-xl text-xs font-bold transition-colors">Edit</button>
+                    <a href="<?= base_url('admin/katalog_reward/hapus/' . $r['id_reward']) ?>" onclick="return confirm('Hapus item reward ini?')" class="bg-red-50 text-[#FF4B4B] hover:bg-[#FF4B4B] hover:text-white px-3 py-2 rounded-xl text-xs font-bold transition-colors">Hapus</a>
+                </div>
             </div>
         </div>
         <?php endforeach; ?>
     <?php endif; ?>
 </div>
 
-<!-- Modal Tambah Reward -->
-<div id="modal-reward" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4" style="display:none">
-    <div class="bg-white rounded-3xl w-full max-w-lg shadow-none p-6 relative animate-fade-in-up max-h-[90vh] overflow-y-auto">
+<!-- ==================== MODAL TAMBAH REWARD ==================== -->
+<div id="modal-reward" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl p-6 relative animate-fade-in-up max-h-[90vh] overflow-y-auto">
         <button id="btn-close-modal-reward" class="absolute right-5 top-5 text-[#AFAFAF] hover:text-gray-600 font-bold text-xl w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#f7f7f7]">&times;</button>
         
         <h2 class="text-2xl font-extrabold text-[#4B4B4B] mb-6 flex items-center gap-2">
@@ -139,13 +168,13 @@
             
             <div>
                 <label class="block text-xs font-extrabold text-[#777] uppercase mb-2">Harga (Poin Dibutuhkan)</label>
-                <input type="number" name="poin_dibutuhkan" required placeholder="Contoh: 100" class="w-full px-4 py-3 rounded-xl bg-[#f7f7f7] border border-[#E5E5E5] focus:bg-white focus:border-purple-500 outline-none font-bold text-[#58CC02] transition-all">
+                <input type="number" name="poin_dibutuhkan" required placeholder="Contoh: 100" min="1" class="w-full px-4 py-3 rounded-xl bg-[#f7f7f7] border border-[#E5E5E5] focus:bg-white focus:border-purple-500 outline-none font-bold text-[#58CC02] transition-all">
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-extrabold text-[#777] uppercase mb-2">Tipe Diskon</label>
-                    <select name="tipe_diskon" id="tipe_diskon" required class="w-full px-4 py-3 rounded-xl bg-[#f7f7f7] border border-[#E5E5E5] focus:bg-white focus:border-purple-500 outline-none font-bold text-[#4B4B4B] transition-all">
+                    <select name="tipe_diskon" id="tipe_diskon_tambah" required class="w-full px-4 py-3 rounded-xl bg-[#f7f7f7] border border-[#E5E5E5] focus:bg-white focus:border-purple-500 outline-none font-bold text-[#4B4B4B] transition-all" onchange="toggleNominalReward('tambah', this.value)">
                         <option value="produk">Gratis Produk (Tidak Potong Bill)</option>
                         <option value="nominal">Potongan Nominal (Rp)</option>
                         <option value="persen">Potongan Persentase (%)</option>
@@ -153,12 +182,93 @@
                 </div>
                 <div>
                     <label class="block text-xs font-extrabold text-[#777] uppercase mb-2">Nominal / Persentase</label>
-                    <input type="number" name="nominal_diskon" id="nominal_diskon" value="0" placeholder="0" class="w-full px-4 py-3 rounded-xl bg-[#f7f7f7] border border-[#E5E5E5] focus:bg-white focus:border-purple-500 outline-none font-bold text-[#4B4B4B] transition-all">
+                    <input type="number" name="nominal_diskon" id="nominal_diskon_tambah" value="0" placeholder="0" readonly class="w-full px-4 py-3 rounded-xl bg-[#f7f7f7] border border-[#E5E5E5] focus:bg-white focus:border-purple-500 outline-none font-bold text-[#4B4B4B] transition-all opacity-50 cursor-not-allowed">
                 </div>
+            </div>
+
+            <!-- Target Item Menu -->
+            <div>
+                <label class="block text-xs font-extrabold text-[#777] uppercase mb-2">Target Item Menu <span class="text-purple-500">(Opsional)</span></label>
+                <select name="target_id_menu" class="w-full px-4 py-3 rounded-xl bg-[#f7f7f7] border border-[#E5E5E5] focus:bg-white focus:border-purple-500 outline-none font-bold text-[#4B4B4B] transition-all">
+                    <option value="">-- Berlaku untuk Semua Menu --</option>
+                    <?php if(!empty($menuList)): ?>
+                        <?php foreach($menuList as $m): ?>
+                            <option value="<?= $m['id_menu'] ?>"><?= esc($m['kode_item'] ? '['.$m['kode_item'].'] ' : '') . esc($m['nama_item']) ?> (<?= ucfirst($m['kategori']) ?>)</option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </select>
+                <p class="text-[10px] text-[#AFAFAF] mt-1 font-bold">Jika dipilih, reward hanya berlaku untuk item menu ini.</p>
             </div>
             
             <button type="submit" class="w-full mt-4 bg-gray-800 text-white font-extrabold py-4 rounded-xl shadow-none hover:bg-gray-900 active:scale-95 transition-all">
                 Simpan ke Katalog
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- ==================== MODAL EDIT REWARD ==================== -->
+<div id="modal-edit-reward" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl p-6 relative animate-fade-in-up max-h-[90vh] overflow-y-auto">
+        <button id="btn-close-modal-edit-reward" class="absolute right-5 top-5 text-[#AFAFAF] hover:text-gray-600 font-bold text-xl w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#f7f7f7]">&times;</button>
+        
+        <h2 class="text-2xl font-extrabold text-[#4B4B4B] mb-6 flex items-center gap-2">
+            <span class="text-purple-500">✏️</span> Edit Item Reward
+        </h2>
+        
+        <form id="form-edit-reward" action="" method="POST" class="space-y-4">
+            <div class="flex gap-4">
+                <div class="w-20">
+                    <label class="block text-xs font-extrabold text-[#777] uppercase mb-2">Ikon</label>
+                    <input type="text" id="edit_ikon" name="ikon" required class="w-full px-4 py-3 rounded-xl bg-[#f7f7f7] border border-[#E5E5E5] focus:bg-white focus:border-purple-500 outline-none font-extrabold text-[#4B4B4B] text-center transition-all">
+                </div>
+                <div class="flex-1">
+                    <label class="block text-xs font-extrabold text-[#777] uppercase mb-2">Nama Reward</label>
+                    <input type="text" id="edit_nama_reward" name="nama_reward" required class="w-full px-4 py-3 rounded-xl bg-[#f7f7f7] border border-[#E5E5E5] focus:bg-white focus:border-purple-500 outline-none font-bold text-[#4B4B4B] transition-all">
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-xs font-extrabold text-[#777] uppercase mb-2">Deskripsi Singkat</label>
+                <textarea id="edit_deskripsi_reward" name="deskripsi" required rows="2" class="w-full px-4 py-3 rounded-xl bg-[#f7f7f7] border border-[#E5E5E5] focus:bg-white focus:border-purple-500 outline-none font-medium text-[#4B4B4B] transition-all"></textarea>
+            </div>
+            
+            <div>
+                <label class="block text-xs font-extrabold text-[#777] uppercase mb-2">Harga (Poin Dibutuhkan)</label>
+                <input type="number" id="edit_poin_dibutuhkan" name="poin_dibutuhkan" required min="1" class="w-full px-4 py-3 rounded-xl bg-[#f7f7f7] border border-[#E5E5E5] focus:bg-white focus:border-purple-500 outline-none font-bold text-[#58CC02] transition-all">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-extrabold text-[#777] uppercase mb-2">Tipe Diskon</label>
+                    <select id="edit_tipe_diskon" name="tipe_diskon" required class="w-full px-4 py-3 rounded-xl bg-[#f7f7f7] border border-[#E5E5E5] focus:bg-white focus:border-purple-500 outline-none font-bold text-[#4B4B4B] transition-all" onchange="toggleNominalReward('edit', this.value)">
+                        <option value="produk">Gratis Produk (Tidak Potong Bill)</option>
+                        <option value="nominal">Potongan Nominal (Rp)</option>
+                        <option value="persen">Potongan Persentase (%)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-extrabold text-[#777] uppercase mb-2">Nominal / Persentase</label>
+                    <input type="number" id="edit_nominal_diskon" name="nominal_diskon" value="0" class="w-full px-4 py-3 rounded-xl bg-[#f7f7f7] border border-[#E5E5E5] focus:bg-white focus:border-purple-500 outline-none font-bold text-[#4B4B4B] transition-all">
+                </div>
+            </div>
+
+            <!-- Target Item Menu -->
+            <div>
+                <label class="block text-xs font-extrabold text-[#777] uppercase mb-2">Target Item Menu <span class="text-purple-500">(Opsional)</span></label>
+                <select id="edit_target_id_menu_reward" name="target_id_menu" class="w-full px-4 py-3 rounded-xl bg-[#f7f7f7] border border-[#E5E5E5] focus:bg-white focus:border-purple-500 outline-none font-bold text-[#4B4B4B] transition-all">
+                    <option value="">-- Berlaku untuk Semua Menu --</option>
+                    <?php if(!empty($menuList)): ?>
+                        <?php foreach($menuList as $m): ?>
+                            <option value="<?= $m['id_menu'] ?>"><?= esc($m['kode_item'] ? '['.$m['kode_item'].'] ' : '') . esc($m['nama_item']) ?> (<?= ucfirst($m['kategori']) ?>)</option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </select>
+                <p class="text-[10px] text-[#AFAFAF] mt-1 font-bold">Jika dipilih, reward hanya berlaku untuk item menu ini.</p>
+            </div>
+            
+            <button type="submit" class="w-full mt-4 bg-purple-600 text-white font-extrabold py-4 rounded-xl shadow-none hover:bg-purple-700 active:scale-95 transition-all">
+                ✏️ Perbarui Reward
             </button>
         </form>
     </div>
@@ -173,27 +283,60 @@
         animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
     #modal-reward:not(.hidden) { display: flex !important; }
+    #modal-edit-reward:not(.hidden) { display: flex !important; }
 </style>
 
 <script>
+    // ===== TOGGLE NOMINAL DISKON =====
+    function toggleNominalReward(mode, tipe) {
+        const nominalId = mode === 'tambah' ? 'nominal_diskon_tambah' : 'edit_nominal_diskon';
+        const el = document.getElementById(nominalId);
+        if (!el) return;
+        if (tipe === 'produk') {
+            el.value = 0;
+            el.setAttribute('readonly', true);
+            el.classList.add('opacity-50', 'cursor-not-allowed');
+        } else {
+            el.removeAttribute('readonly');
+            el.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+    }
+
+    // ===== MODAL TAMBAH =====
     const btnOpenReward = document.getElementById('btn-open-modal-reward');
     const btnCloseReward = document.getElementById('btn-close-modal-reward');
     const modalReward = document.getElementById('modal-reward');
+
     if(btnOpenReward) btnOpenReward.addEventListener('click', () => { modalReward.classList.remove('hidden'); modalReward.style.display = 'flex'; });
     if(btnCloseReward) btnCloseReward.addEventListener('click', () => { modalReward.classList.add('hidden'); modalReward.style.display = 'none'; });
     if(modalReward) modalReward.addEventListener('click', (e) => { if(e.target === modalReward) { modalReward.classList.add('hidden'); modalReward.style.display = 'none'; } });
 
-    document.getElementById('tipe_diskon').addEventListener('change', function() {
-        const nominalInput = document.getElementById('nominal_diskon');
-        if(this.value === 'produk') {
-            nominalInput.value = 0;
-            nominalInput.setAttribute('readonly', true);
-            nominalInput.classList.add('bg-[#f7f7f7]', 'text-[#AFAFAF]');
-        } else {
-            nominalInput.removeAttribute('readonly');
-            nominalInput.classList.remove('bg-[#f7f7f7]', 'text-[#AFAFAF]');
-        }
-    });
+    // ===== MODAL EDIT =====
+    const modalEditReward = document.getElementById('modal-edit-reward');
+    const btnCloseEditReward = document.getElementById('btn-close-modal-edit-reward');
+
+    function bukaModalEditReward(data) {
+        document.getElementById('edit_ikon').value = data.ikon || '🎁';
+        document.getElementById('edit_nama_reward').value = data.nama_reward || '';
+        document.getElementById('edit_deskripsi_reward').value = data.deskripsi || '';
+        document.getElementById('edit_poin_dibutuhkan').value = data.poin_dibutuhkan || '';
+        document.getElementById('edit_tipe_diskon').value = data.tipe_diskon || 'produk';
+        document.getElementById('edit_nominal_diskon').value = data.nominal_diskon || 0;
+        document.getElementById('edit_target_id_menu_reward').value = data.target_id_menu || '';
+
+        // Toggle nominal berdasarkan tipe
+        toggleNominalReward('edit', data.tipe_diskon);
+
+        // Set action form
+        document.getElementById('form-edit-reward').action = '<?= base_url('admin/katalog_reward/update/') ?>' + data.id_reward;
+
+        // Buka modal
+        modalEditReward.classList.remove('hidden');
+        modalEditReward.style.display = 'flex';
+    }
+
+    if(btnCloseEditReward) btnCloseEditReward.addEventListener('click', () => { modalEditReward.classList.add('hidden'); modalEditReward.style.display = 'none'; });
+    if(modalEditReward) modalEditReward.addEventListener('click', (e) => { if(e.target === modalEditReward) { modalEditReward.classList.add('hidden'); modalEditReward.style.display = 'none'; } });
 </script>
 
 <?= $this->endSection() ?>

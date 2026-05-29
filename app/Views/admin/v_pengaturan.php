@@ -31,7 +31,7 @@
             <div class="space-y-5">
                 <div>
                     <label class="block text-[10px] font-extrabold text-[#AFAFAF] uppercase tracking-widest mb-2">Nama Toko / Kafe</label>
-                    <input type="text" name="nama_toko" value="<?= esc($pengaturan['nama_toko'] ?? 'Kafe Gamified') ?>" class="w-full px-5 py-4 rounded-xl bg-white border border-[#E5E5E5] focus:border-[#58CC02] focus:ring-4 focus:ring-[#1CB0F6]/20 outline-none text-[#4B4B4B] font-bold transition-all shadow-sm">
+                    <input type="text" name="nama_toko" value="<?= esc($pengaturan['nama_toko'] ?? 'Toko Kopi Jaya Lestari') ?>" class="w-full px-5 py-4 rounded-xl bg-white border border-[#E5E5E5] focus:border-[#58CC02] focus:ring-4 focus:ring-[#1CB0F6]/20 outline-none text-[#4B4B4B] font-bold transition-all shadow-sm">
                 </div>
                 
                 <div>

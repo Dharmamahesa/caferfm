@@ -192,35 +192,46 @@
         const ctx = document.getElementById('salesChart');
         if(!ctx) return;
         
-        // Data dari PHP
+        const namaBulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
+        
+        // Data dari PHP (monthly)
         const rawData = <?= json_encode($grafik_penjualan ?? []) ?>;
         
-        // Format label tanggal
-        const labels = rawData.map(item => {
-            const date = new Date(item.tanggal);
-            return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
-        });
+        // Build 12-month labels and data
+        const now = new Date();
+        const labels = [];
+        const data = [];
         
-        // Data nominal
-        const data = rawData.map(item => parseInt(item.total));
+        for(let i = 11; i >= 0; i--) {
+            const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+            labels.push(namaBulan[d.getMonth()] + ' ' + d.getFullYear());
+            
+            const found = rawData.find(r => r.bulan === key);
+            data.push(found ? parseInt(found.total) : 0);
+        }
 
         new Chart(ctx, {
-            type: 'line',
+            type: 'bar',
             data: {
                 labels: labels,
                 datasets: [{
                     label: 'Pendapatan (Rp)',
                     data: data,
-                    borderColor: '#58CC02',
-                    backgroundColor: 'rgba(88, 204, 2, 0.08)',
-                    borderWidth: 3,
-                    pointBackgroundColor: '#fff',
-                    pointBorderColor: '#58CC02',
-                    pointBorderWidth: 2,
-                    pointRadius: 4,
-                    pointHoverRadius: 6,
-                    fill: true,
-                    tension: 0.4
+                    backgroundColor: function(context) {
+                        const chart = context.chart;
+                        const {ctx: c, chartArea} = chart;
+                        if(!chartArea) return '#58CC02';
+                        const gradient = c.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+                        gradient.addColorStop(0, 'rgba(88, 204, 2, 0.6)');
+                        gradient.addColorStop(1, 'rgba(88, 204, 2, 1)');
+                        return gradient;
+                    },
+                    borderColor: '#4BB200',
+                    borderWidth: 1,
+                    borderRadius: 6,
+                    borderSkipped: false,
+                    hoverBackgroundColor: '#58CC02',
                 }]
             },
             options: {
@@ -231,7 +242,8 @@
                     tooltip: {
                         backgroundColor: '#100F3E',
                         padding: 12,
-                        titleFont: { size: 13, family: "'Nunito', sans-serif" },
+                        cornerRadius: 10,
+                        titleFont: { size: 12, family: "'Nunito', sans-serif", weight: '700' },
                         bodyFont: { size: 14, weight: 'bold', family: "'Nunito', sans-serif" },
                         callbacks: {
                             label: function(context) {
@@ -243,12 +255,12 @@
                 scales: {
                     y: {
                         beginAtZero: true,
-                        grid: { color: '#E5E5E5', drawBorder: false },
+                        grid: { color: '#f0f0f0', drawBorder: false },
                         ticks: {
                             font: { family: "'Nunito', sans-serif", size: 10 },
                             color: '#AFAFAF',
                             callback: function(value) {
-                                if(value >= 1000000) return 'Rp ' + (value/1000000) + 'M';
+                                if(value >= 1000000) return 'Rp ' + (value/1000000).toFixed(1) + 'M';
                                 if(value >= 1000) return 'Rp ' + (value/1000) + 'k';
                                 return value;
                             }
@@ -256,7 +268,12 @@
                     },
                     x: {
                         grid: { display: false, drawBorder: false },
-                        ticks: { font: { family: "'Nunito', sans-serif", size: 11 }, color: '#AFAFAF' }
+                        ticks: { 
+                            font: { family: "'Nunito', sans-serif", size: 9 }, 
+                            color: '#AFAFAF',
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
                     }
                 },
                 interaction: { intersect: false, mode: 'index' }
